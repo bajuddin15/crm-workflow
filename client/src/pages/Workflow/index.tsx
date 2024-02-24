@@ -3,7 +3,7 @@ import AddNewTrigger from "../../components/AddNewTrigger";
 import useData from "./data";
 import AddNewAction from "../../components/AddNewAction";
 import { workflowActions, workflowTriggers } from "./constants";
-import { Trash2 } from "lucide-react";
+import { Divide, SpaceIcon, Trash2 } from "lucide-react";
 import Loading from "../../components/Loading";
 
 // builder page
@@ -49,35 +49,42 @@ const Workflow = () => {
                 />
               )}
               <div className="w-[1px] h-10 bg-gray-300"></div>
-              <AddNewAction
+              {/* <AddNewAction
                 workflowActions={workflowActions}
                 workflowId={workflowId}
-              />
-              {actions?.map((item) => {
+              /> */}
+              {actions?.map((item, index) => {
                 return (
                   <>
-                    <div className="w-[1px] h-10 bg-gray-300"></div>
+                    {/* <div className="w-[1px] h-10 bg-gray-300"></div> */}
                     <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-52 rounded-md">
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-blue-500">
                           Action
                         </span>
                         <span className="text-sm text-gray-500">
-                          {item?.name}
+                          {item?.name}{" "}
+                          {item.unqName === "delay" && (
+                            <span>
+                              {`: ${item?.delayTime} ${item?.delayFormate}`}{" "}
+                            </span>
+                          )}
                         </span>
                       </div>
                       <div
                         onClick={() => handleDeleteWorkflowAction(item?._id)}
-                        className="cursor-pointer w-6 h-6 flex items-center justify-center  rounded-md"
+                        className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
                       >
-                        <Trash2 size={14} color="gray" />
+                        <Trash2 size={12} color="gray" />
                       </div>
                     </div>
                     <div className="w-[1px] h-10 bg-gray-300"></div>
-                    <AddNewAction
-                      workflowActions={workflowActions}
-                      workflowId={workflowId}
-                    />
+                    {index === actions.length - 1 && (
+                      <AddNewAction
+                        workflowActions={workflowActions}
+                        workflowId={workflowId}
+                      />
+                    )}
                   </>
                 );
               })}

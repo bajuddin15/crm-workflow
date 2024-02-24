@@ -5,6 +5,8 @@ import Drawer from "react-modern-drawer";
 import Loading from "../Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { addTriggers } from "../../store/slices/workflowSlice";
+import { useDispatch } from "react-redux";
 
 interface IProps {
   item: any;
@@ -17,6 +19,7 @@ interface IState {
 }
 
 const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
+  const dispatch = useDispatch();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
@@ -31,6 +34,19 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
     setIsOpenModal((prevState) => !prevState);
   };
 
+  const fetchWorkflowTriggers = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/workflowTrigger/allTriggers/${workflowId}`
+      );
+      if (data && data?.success) {
+        dispatch(addTriggers(data?.data));
+      }
+    } catch (error: any) {
+      console.log("Fetch triggers error : ", error.message);
+    }
+  };
+
   //   action created
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -40,6 +56,7 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
       const { data } = await axios.post("/api/workflowTrigger/create", values);
       if (data && data.success) {
         toast.success(data?.message);
+        fetchWorkflowTriggers();
         handleToggleDrawer();
       } else {
         toast.error(data?.message);

@@ -12,6 +12,19 @@ const workflowActionSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    delayTime: {
+      type: String, // it should be in miliseconds
+      default: 0,
+    },
+    delayFormate: {
+      type: String, // it should be in miliseconds
+      enum: ["seconds", "minutes", "hours", "days"],
+      default: "seconds",
+    },
+    pickFromPayload: {
+      type: Boolean,
+      default: true,
+    },
     contactName: {
       type: String,
     },

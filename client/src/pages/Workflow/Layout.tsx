@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useState } from "react";
 import { ChevronLeft, Pencil } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import useData from "./data";
@@ -11,7 +11,10 @@ interface IProps {
 const Layout: React.FC<IProps> = ({ children }) => {
   const { state, setWorkflowName, setWorkflowStatus, handleUpdateWorkflow } =
     useData();
-  const { workflowId, workflowName, workflowStatus, updateLoading } = state;
+  const { workflowId, workflowName, workflowStatus, updateLoading, actions } =
+    state;
+
+  const disablePublishBtn = actions.length > 0 ? false : true;
 
   const location = useLocation();
   const pathname = location?.pathname;
@@ -87,6 +90,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
             <span>Draft</span>
             <input
               type="checkbox"
+              disabled={disablePublishBtn}
               className={`toggle toggle-sm ${
                 workflowStatus === "draft"
                   ? "[--tglbg:white]"

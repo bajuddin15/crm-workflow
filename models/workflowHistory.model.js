@@ -6,6 +6,18 @@ const workflowHistorySchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workflow",
     },
+    actionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "WorkflowAction",
+    },
+    status: {
+      type: String,
+      enum: ["failed", "finshed", "waiting"],
+      default: "waiting",
+    },
+    contact: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

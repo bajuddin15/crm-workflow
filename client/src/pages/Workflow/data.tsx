@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
+import { RootState } from "../../store/reducers";
+import { addActions, addTriggers } from "../../store/slices/workflowSlice";
 
 interface IState {
   triggers: Array<any>;
@@ -16,9 +19,14 @@ interface IState {
 
 const useData = () => {
   const params = useParams();
+  const dispatch = useDispatch();
   const { id: workflowId } = params;
-  const [triggers, setTriggers] = useState<IState["triggers"]>([]);
-  const [actions, setActions] = useState<IState["actions"]>([]);
+  const triggers = useSelector(
+    (state: RootState) => state?.workflowStore?.triggers
+  );
+  const actions = useSelector(
+    (state: RootState) => state?.workflowStore?.actions
+  );
 
   const [workflow, setWorkflow] = useState<IState["workflow"]>(null);
   const [workflowName, setWorkflowName] = useState<IState["workflowName"]>("");
@@ -41,7 +49,7 @@ const useData = () => {
         `/api/workflowTrigger/allTriggers/${workflowId}`
       );
       if (data && data?.success) {
-        setTriggers(data?.data);
+        dispatch(addTriggers(data?.data));
       }
     } catch (error: any) {
       console.log("Fetch triggers error : ", error.message);
@@ -55,7 +63,7 @@ const useData = () => {
         `/api/workflowAction/allActions/${workflowId}`
       );
       if (data && data?.success) {
-        setActions(data?.data);
+        dispatch(addActions(data?.data));
       }
     } catch (error: any) {
       console.log("Fetch workflow actions error : ", error.message);
@@ -174,8 +182,6 @@ const useData = () => {
 
   return {
     state,
-    setTriggers,
-    setActions,
     setWorkflow,
     setWorkflowName,
     setWorkflowStatus,
