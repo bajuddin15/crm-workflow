@@ -3,7 +3,7 @@ import AddNewTrigger from "../../components/AddNewTrigger";
 import useData from "./data";
 import AddNewAction from "../../components/AddNewAction";
 import { workflowActions, workflowTriggers } from "./constants";
-import { Divide, SpaceIcon, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import Loading from "../../components/Loading";
 
 // builder page
