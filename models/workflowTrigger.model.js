@@ -9,7 +9,6 @@ const workflowTriggerSchema = new mongoose.Schema(
     unqName: {
       type: String,
       required: true,
-      unique: true,
     },
     workflowId: {
       type: mongoose.Schema.Types.ObjectId,

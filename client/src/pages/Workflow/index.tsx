@@ -49,10 +49,12 @@ const Workflow = () => {
                 />
               )}
               <div className="w-[1px] h-10 bg-gray-300"></div>
-              {/* <AddNewAction
-                workflowActions={workflowActions}
-                workflowId={workflowId}
-              /> */}
+              {actions.length === 0 && (
+                <AddNewAction
+                  workflowActions={workflowActions}
+                  workflowId={workflowId}
+                />
+              )}
               {actions?.map((item, index) => {
                 return (
                   <>

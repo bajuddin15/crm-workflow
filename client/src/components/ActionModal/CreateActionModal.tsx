@@ -1,13 +1,15 @@
-import { PlusCircle, Tag, Trash2, X } from "lucide-react";
+import { ChevronRight, PlusCircle, Tag, Trash2, X } from "lucide-react";
 import React, { useState } from "react";
 // import component 👇
 import Drawer from "react-modern-drawer";
+import { actionItemTags } from "./constants";
 // import Loading from "../Loading";
-// import axios from "axios";
-// import toast from "react-hot-toast";
+import axios from "axios";
+import toast from "react-hot-toast";
 // import Select from "react-select";
-// import { addActions } from "../../store/slices/workflowSlice";
-// import { useDispatch } from "react-redux";
+import { addActions } from "../../store/slices/workflowSlice";
+import { useDispatch } from "react-redux";
+import Loading from "../Loading";
 
 interface IProps {
   item: any;
@@ -29,12 +31,14 @@ function Row({
   onChangeKey,
   onChangeValue,
   onDelete,
+  setShowTagsOfIndex,
 }: {
   index: number;
   formData: FormData;
   onChangeKey: (index: number, key: string) => void;
   onChangeValue: (index: number, value: string) => void;
   onDelete: (index: number) => void;
+  setShowTagsOfIndex: (showTags: number) => void;
 }) {
   return (
     <>
@@ -54,7 +58,7 @@ function Row({
             onChange={(e) => onChangeValue(index, e.target.value)}
             placeholder="Value"
           />
-          <button>
+          <button onClick={() => setShowTagsOfIndex(index)}>
             <Tag size={18} color="gray" />
           </button>
         </div>
@@ -70,11 +74,12 @@ function Row({
 }
 
 const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   const [isOpenModal, setIsOpenModal] = React.useState(false);
+  const [showTagsOfIndex, setShowTagsOfIndex] = useState<number>(-1);
 
-  // const [loading, setLoading] = useState<IState["loading"]>(false);
+  const [loading, setLoading] = useState<IState["loading"]>(false);
   // const [selectedDelayFormate, setSelectedDelayFormate] = useState({
   //   value: "seconds",
   //   label: "Seconds",
@@ -84,72 +89,66 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     workflowId: workflowId,
     name: item?.name,
     unqName: item?.unqName,
-    delayTime: 0, // it should be in miliseconds
-    delayFormate: "seconds",
-    pickFromPayload: true,
-    contactName: "",
-    email: "",
-    phoneNumber: "",
-    groupName: "",
-    toNumber: "",
-    fromNumber: "",
-    message: "",
-    mediaUrl: "",
-    templateName: "",
-    templateLang: "",
   });
+  const [formData, setFormData] = useState<FormData[]>([
+    { key: "", value: "" },
+  ]);
 
   const handleToggleDrawer = () => {
     setIsOpenModal((prevState) => !prevState);
   };
 
-  // const fetchWorkflowActions = async () => {
-  //   try {
-  //     const { data } = await axios.get(
-  //       `/api/workflowAction/allActions/${workflowId}`
-  //     );
-  //     if (data && data?.success) {
-  //       dispatch(addActions(data?.data));
-  //     }
-  //   } catch (error: any) {
-  //     console.log("Fetch workflow actions error : ", error.message);
-  //   }
-  // };
+  const fetchWorkflowActions = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/workflowAction/allActions/${workflowId}`
+      );
+      if (data && data?.success) {
+        dispatch(addActions(data?.data));
+      }
+    } catch (error: any) {
+      console.log("Fetch workflow actions error : ", error.message);
+    }
+  };
 
   //   action created
-  // const handleSubmit = async (e: any) => {
-  //   e.preventDefault();
+  const handleSubmit = async (e: any) => {
+    e.preventDefault();
 
-  //   // If user have added delay event
-  //   const formData = { ...values, delayFormate: selectedDelayFormate.value };
+    const fromValues: any = {};
+    formData.forEach((item: any) => {
+      fromValues[item.key] = item.value;
+    });
 
-  //   console.log("form values --", formData);
+    // If user have added delay event
+    const formDataAction = { ...values, ...fromValues };
 
-  //   setLoading(true);
-  //   try {
-  //     const { data } = await axios.post("/api/workflowAction/create", formData);
-  //     if (data && data.success) {
-  //       toast.success(data?.message);
-  //       fetchWorkflowActions();
-  //       handleToggleDrawer();
-  //     } else {
-  //       toast.error(data?.message);
-  //     }
-  //     console.log("action created--", data);
-  //   } catch (error: any) {
-  //     console.log("Action creation Error : ", error);
-  //     if (error?.response) {
-  //       toast.error(error?.response?.data?.message);
-  //     } else {
-  //       toast.error(error.message);
-  //     }
-  //   }
-  //   setLoading(false);
-  // };
+    console.log("form values --", formDataAction);
 
-  const [formData, setFormData] = useState<FormData[]>([
-    { key: "", value: "" },
-  ]);
+    setLoading(true);
+    try {
+      const { data } = await axios.post(
+        "/api/workflowAction/create",
+        formDataAction
+      );
+      if (data && data.success) {
+        toast.success(data?.message);
+        fetchWorkflowActions();
+        handleToggleDrawer();
+      } else {
+        toast.error(data?.message);
+      }
+      console.log("action created--", data);
+    } catch (error: any) {
+      console.log("Action creation Error : ", error);
+      if (error?.response) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error(error.message);
+      }
+    }
+    setLoading(false);
+  };
 
   const addRow = () => {
     setFormData([...formData, { key: "", value: "" }]);
@@ -173,8 +172,33 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     setFormData(updatedFormData);
   };
 
-  const handleSubmitForm = () => {
-    console.log(formData);
+  const handleUpdateKeyOfTag = (index: number, tagValue: string) => {
+    console.log({ index, tagValue });
+    if (tagValue === "{{contact.name}}") {
+      handleChangeKey(index, "contactName");
+    } else if (tagValue === "{{contact.email}}") {
+      handleChangeKey(index, "email");
+    } else if (tagValue === "{{contact.phoneNumber}}") {
+      handleChangeKey(index, "phoneNumber");
+    } else if (tagValue === "{{contact.groupName}}") {
+      handleChangeKey(index, "groupName");
+    } else if (tagValue === "{{toNumber}}") {
+      handleChangeKey(index, "toNumber");
+    } else if (tagValue === "{{fromNumber}}") {
+      handleChangeKey(index, "fromNumber");
+    } else if (tagValue === "{{message}}") {
+      handleChangeKey(index, "message");
+    } else if (tagValue === "{{mediaUrl}}") {
+      handleChangeKey(index, "mediaUrl");
+    } else if (tagValue === "{{templateName}}") {
+      handleChangeKey(index, "templateName");
+    } else if (tagValue === "{{templateLang}}") {
+      handleChangeKey(index, "templateLang");
+    } else if (tagValue === "{{delayTime}}") {
+      handleChangeKey(index, "delayTime");
+    } else if (tagValue === "{{delayFormate}}") {
+      handleChangeKey(index, "delayFormate");
+    }
   };
 
   return (
@@ -233,25 +257,77 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
             </span>
             <div className="flex flex-col gap-4">
               {formData.map((data, index) => (
-                <Row
-                  key={index}
-                  index={index}
-                  formData={data}
-                  onChangeKey={handleChangeKey}
-                  onChangeValue={handleChangeValue}
-                  onDelete={deleteRow}
-                />
+                <div className="relative">
+                  <Row
+                    key={index}
+                    index={index}
+                    formData={data}
+                    onChangeKey={handleChangeKey}
+                    onChangeValue={handleChangeValue}
+                    onDelete={deleteRow}
+                    setShowTagsOfIndex={setShowTagsOfIndex}
+                  />
+
+                  {showTagsOfIndex === index && (
+                    <div className="absolute -top-24 right-0 text-sm border border-gray-300  w-48 h-52 overflow-auto z-50 bg-white shadow-sm">
+                      <div className="flex items-center justify-between bg-gray-200 p-2 cursor-pointer rounded-sm">
+                        <span className="text-blue-500">Custom Values</span>
+                        <button onClick={() => setShowTagsOfIndex(-1)}>
+                          <X size={17} color="blue" />
+                        </button>
+                      </div>
+
+                      {actionItemTags.map((item: any, idx) => {
+                        const key = Object.keys(item)[0]; // Extract the key
+                        const value = item[key];
+                        return (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between hover:bg-gray-100 p-2 cursor-pointer rounded-sm"
+                            onClick={() => {
+                              handleChangeValue(index, value);
+                              handleUpdateKeyOfTag(index, value);
+                              setShowTagsOfIndex(-1);
+                            }}
+                          >
+                            <span>{key}</span>
+                            <button>
+                              <ChevronRight size={17} color="black" />
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
-            <button
-              onClick={addRow}
-              className="flex items-center gap-2 cursor-pointer my-4"
-            >
-              <PlusCircle size={18} color="rgba(0,0,255,0.5)" />
-              <span className="text-blue-500 text-sm">Add items</span>
-            </button>
-            <button onClick={handleSubmitForm}>Submit</button>
+            <div>
+              <button
+                onClick={addRow}
+                className="flex items-center gap-2 cursor-pointer my-4"
+              >
+                <PlusCircle size={18} color="rgba(0,0,255,0.5)" />
+                <span className="text-blue-500 text-sm">Add items</span>
+              </button>
+            </div>
+
+            <div className="text-sm flex items-center justify-between mt-10">
+              <button className="border border-gray-300 px-4 py-2 rounded-md">
+                Cancel
+              </button>
+              <button
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                onClick={handleSubmit}
+              >
+                {loading ? (
+                  <Loading bgColor="#fff" size="21" />
+                ) : (
+                  <span>Save</span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </Drawer>

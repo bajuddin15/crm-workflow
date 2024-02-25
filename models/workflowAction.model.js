@@ -5,12 +5,10 @@ const workflowActionSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
-      unique: true,
     },
     unqName: {
       type: String,
       required: true,
-      unique: true,
     },
     delayTime: {
       type: String, // it should be in miliseconds
