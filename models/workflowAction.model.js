@@ -16,7 +16,7 @@ const workflowActionSchema = new mongoose.Schema(
     },
     delayFormate: {
       type: String, // it should be in miliseconds
-      enum: ["seconds", "minutes", "hours", "days"],
+      enum: ["seconds", "minutes", "hours", "days", "{{delayFormate}}"],
       default: "seconds",
     },
     pickFromPayload: {

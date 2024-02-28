@@ -11,10 +11,10 @@ export const workflowActions = [
     name: "Delay",
     unqName: "delay",
   },
-  {
-    name: "Filter",
-    unqName: "filter",
-  },
+  // {
+  //   name: "Filter",
+  //   unqName: "filter",
+  // },
   {
     name: "Send WhatsApp Templates",
     unqName: "sendWhatsAppTemplates",

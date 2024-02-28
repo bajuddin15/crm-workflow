@@ -9,23 +9,38 @@ interface IProps {
 }
 
 const Layout: React.FC<IProps> = ({ children }) => {
-  const { state, setWorkflowName, setWorkflowStatus, handleUpdateWorkflow } =
-    useData();
-  const { workflowId, workflowName, workflowStatus, updateLoading, actions } =
-    state;
+  const {
+    state,
+    setWorkflowName,
+    setWorkflowStatus,
+    handleUpdateWorkflow,
+    handleDeleteWorkflow,
+  } = useData();
+  const {
+    token,
+    workflowId,
+    workflowName,
+    workflowStatus,
+    updateLoading,
+    deleteWorkflowLoading,
+    actions,
+  } = state;
 
   const disablePublishBtn = actions.length > 0 ? false : true;
 
   const location = useLocation();
   const pathname = location?.pathname;
 
-  console.log("location.pathname", pathname);
+  console.log("location.pathname", {
+    pathname,
+    path: `/workflow/${workflowId}/?token=${token}`,
+  });
 
   return (
     <div className="flex flex-col">
       {/* header */}
       <div className="container h-14 border-b border-b-gray-200 text-sm flex items-center justify-between">
-        <Link to="/">
+        <Link to={`/?token=${token}`}>
           <div className="flex items-center gap-2 cursor-pointer">
             <ChevronLeft size={28} />
             <span className="font-medium">Back to Workflows</span>
@@ -40,10 +55,20 @@ const Layout: React.FC<IProps> = ({ children }) => {
           />
           <Pencil size={16} />
         </div>
-        <div>
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => handleDeleteWorkflow(workflowId)}
+            className="w-16 h-9 flex items-center justify-center text-white bg-red-600 hover:bg-red-700 rounded-md"
+          >
+            {deleteWorkflowLoading ? (
+              <Loading bgColor="#fff" />
+            ) : (
+              <span>Delete</span>
+            )}
+          </button>
           <button
             onClick={handleUpdateWorkflow}
-            className="w-16 h-10 flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+            className="w-16 h-9 flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 rounded-md"
           >
             {updateLoading ? <Loading bgColor="#fff" /> : <span>Save</span>}
           </button>
@@ -55,9 +80,9 @@ const Layout: React.FC<IProps> = ({ children }) => {
         <div></div>
         <div className="flex items-center gap-8 text-sm">
           <Link
-            to={`/workflow/${workflowId}`}
+            to={`/workflow/${workflowId}/?token=${token}`}
             className={`py-3 tracking-wide ${
-              pathname === `/workflow/${workflowId}`
+              pathname === `/workflow/${workflowId}/`
                 ? "border-b-2 border-b-blue-500 text-blue-500"
                 : "border-b-2 border-white"
             }  hover:text-blue-500 hover:border-b-2 hover:border-blue-500`}
@@ -65,9 +90,9 @@ const Layout: React.FC<IProps> = ({ children }) => {
             Builder
           </Link>
           <Link
-            to={`/workflow/${workflowId}/settings`}
+            to={`/workflow/${workflowId}/settings/?token=${token}`}
             className={`py-3 tracking-wide ${
-              pathname === `/workflow/${workflowId}/settings`
+              pathname === `/workflow/${workflowId}/settings/`
                 ? "border-b-2 border-b-blue-500 text-blue-500"
                 : "border-b-2 border-white"
             } hover:text-blue-500 hover:border-b-2 hover:border-blue-500`}
@@ -75,9 +100,9 @@ const Layout: React.FC<IProps> = ({ children }) => {
             Settings
           </Link>
           <Link
-            to={`/workflow/${workflowId}/status`}
+            to={`/workflow/${workflowId}/status/?token=${token}`}
             className={`py-3 tracking-wide ${
-              pathname === `/workflow/${workflowId}/status`
+              pathname === `/workflow/${workflowId}/status/`
                 ? "border-b-2 border-b-blue-500 text-blue-500"
                 : "border-b-2 border-white"
             } hover:text-blue-500 hover:border-b-2 hover:border-blue-500`}

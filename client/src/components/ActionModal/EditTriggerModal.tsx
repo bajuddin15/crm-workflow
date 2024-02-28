@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 interface IProps {
   item: any;
   workflowId: string;
+  currentTrigger: any;
 }
 
 interface IState {
@@ -18,7 +19,11 @@ interface IState {
   loading: boolean;
 }
 
-const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
+const EditTriggerModal: React.FC<IProps> = ({
+  item,
+  workflowId,
+  currentTrigger,
+}) => {
   const dispatch = useDispatch();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
@@ -50,10 +55,12 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
   //   action created
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    console.log("form values --", values);
     setLoading(true);
     try {
-      const { data } = await axios.post("/api/workflowTrigger/create", values);
+      const { data } = await axios.put(
+        `/api/workflowTrigger/${currentTrigger?._id}`,
+        values
+      );
       if (data && data.success) {
         toast.success(data?.message);
         fetchWorkflowTriggers();
@@ -61,9 +68,7 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
       } else {
         toast.error(data?.message);
       }
-      console.log("action created--", data);
     } catch (error: any) {
-      console.log("Action creation Error : ", error);
       if (error?.response) {
         toast.error(error?.response?.data?.message);
       } else {
@@ -77,9 +82,19 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
     <>
       <div
         onClick={handleToggleDrawer}
-        className="py-2 px-4 border border-gray-300 cursor-pointer"
+        className={`py-2 px-4 border border-gray-300 cursor-pointer rounded-md ${
+          currentTrigger?.unqName === item?.unqName ? "bg-blue-500" : ""
+        }`}
       >
-        <span className="text-sm text-gray-600">{item?.name}</span>
+        <span
+          className={`text-sm ${
+            currentTrigger?.unqName === item?.unqName
+              ? "text-white"
+              : "text-gray-600"
+          }`}
+        >
+          {item?.name}
+        </span>
       </div>
 
       <Drawer
@@ -112,7 +127,7 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
                 htmlFor="actionName"
                 className="text-sm font-medium uppercase"
               >
-                Action name
+                Trigger name
               </label>
               <input
                 id="actionName"
@@ -145,4 +160,4 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
   );
 };
 
-export default CreateTriggerModal;
+export default EditTriggerModal;

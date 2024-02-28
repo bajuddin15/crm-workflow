@@ -11,10 +11,11 @@ interface IState {
 }
 
 interface IProps {
+  token: string | null;
   fetchAllWorkflows: () => void;
 }
 
-const CreateWorkflow: React.FC<IProps> = ({ fetchAllWorkflows }) => {
+const CreateWorkflow: React.FC<IProps> = ({ token, fetchAllWorkflows }) => {
   const [openModal, setOpenModal] = useState<IState["openModal"]>(false);
   const [name, setName] = useState<IState["name"]>("");
   const [description, setDescription] = useState<IState["description"]>("");
@@ -23,11 +24,15 @@ const CreateWorkflow: React.FC<IProps> = ({ fetchAllWorkflows }) => {
   const handleSubmit = async (event: any) => {
     event.preventDefault();
     setLoading(true);
+    if (!token) {
+      toast.error("Token not found");
+      return;
+    }
 
     const formData = {
       name,
       description,
-      token: "OMs5rXuCphJxcYqSnmVP9RQAy",
+      token,
     };
 
     try {

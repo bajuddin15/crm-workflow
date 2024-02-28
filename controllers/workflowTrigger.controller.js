@@ -68,7 +68,7 @@ const deleteWorkflowTrigger = async (req, res) => {
   }
 };
 const editWorkflowTrigger = async (req, res) => {
-  const { name } = req.body;
+  const { name, unqName } = req.body;
   const { id: triggerId } = req.params;
 
   try {
@@ -81,6 +81,7 @@ const editWorkflowTrigger = async (req, res) => {
     }
 
     trigger.name = name || trigger.name;
+    trigger.unqName = unqName || trigger.unqName;
 
     const updatedTrigger = await trigger.save();
     res.status(200).json({

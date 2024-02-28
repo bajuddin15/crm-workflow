@@ -1,5 +1,5 @@
-import { ChevronRight, PlusCircle, Tag, Trash2, X } from "lucide-react";
-import React, { useState } from "react";
+import { ChevronRight, Pencil, PlusCircle, Tag, Trash2, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 // import component 👇
 import Drawer from "react-modern-drawer";
 import { actionItemTags } from "./constants";
@@ -13,7 +13,7 @@ import Loading from "../Loading";
 
 interface IProps {
   item: any;
-  workflowId: string;
+  workflowId: string | undefined;
 }
 
 interface IState {
@@ -73,7 +73,8 @@ function Row({
   );
 }
 
-const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
+const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
+  console.log("s item--------------------", item);
   const dispatch = useDispatch();
 
   const [isOpenModal, setIsOpenModal] = React.useState(false);
@@ -127,8 +128,8 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
 
     setLoading(true);
     try {
-      const { data } = await axios.post(
-        "/api/workflowAction/create",
+      const { data } = await axios.put(
+        `/api/workflowAction/${item?._id}`,
         formDataAction
       );
       if (data && data.success) {
@@ -138,9 +139,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
       } else {
         toast.error(data?.message);
       }
-      console.log("action created--", data);
     } catch (error: any) {
-      console.log("Action creation Error : ", error);
       if (error?.response) {
         toast.error(error?.response?.data?.message);
       } else {
@@ -207,13 +206,62 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     }
   };
 
+  useEffect(() => {
+    const {
+      delayTime,
+      delayFormate,
+      contactName,
+      email,
+      phoneNumber,
+      groupName,
+      toNumber,
+      fromNumber,
+      message,
+      mediaUrl,
+      templateName,
+      templateLang,
+    } = item;
+
+    const formDataArray = [];
+
+    if (item?.unqName === "delay") {
+      if (delayTime !== undefined)
+        formDataArray.push({ key: "delayTime", value: delayTime });
+      if (delayFormate !== undefined)
+        formDataArray.push({ key: "delayFormate", value: delayFormate });
+    } else {
+      if (contactName !== undefined)
+        formDataArray.push({ key: "contactName", value: contactName });
+      if (email !== undefined)
+        formDataArray.push({ key: "email", value: email });
+      if (phoneNumber !== undefined)
+        formDataArray.push({ key: "phoneNumber", value: phoneNumber });
+      if (groupName !== undefined)
+        formDataArray.push({ key: "groupName", value: groupName });
+      if (toNumber !== undefined)
+        formDataArray.push({ key: "toNumber", value: toNumber });
+      if (fromNumber !== undefined)
+        formDataArray.push({ key: "fromNumber", value: fromNumber });
+      if (message !== undefined)
+        formDataArray.push({ key: "message", value: message });
+      if (mediaUrl !== undefined)
+        formDataArray.push({ key: "mediaUrl", value: mediaUrl });
+      if (templateName !== undefined)
+        formDataArray.push({ key: "templateName", value: templateName });
+      if (templateLang !== undefined)
+        formDataArray.push({ key: "templateLang", value: templateLang });
+    }
+
+    setFormData(formDataArray);
+  }, [item, setFormData]);
+
   return (
     <>
       <div
         onClick={handleToggleDrawer}
-        className="py-2 px-4 border border-gray-300 cursor-pointer"
+        className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
       >
-        <span className="text-sm text-gray-600">{item?.name}</span>
+        <Pencil size={12} color="gray" />
       </div>
 
       <Drawer
@@ -341,4 +389,4 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
   );
 };
 
-export default CreateActionModal;
+export default EditActionModal;

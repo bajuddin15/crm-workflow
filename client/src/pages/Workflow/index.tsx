@@ -5,6 +5,8 @@ import AddNewAction from "../../components/AddNewAction";
 import { workflowActions, workflowTriggers } from "./constants";
 import { Trash2 } from "lucide-react";
 import Loading from "../../components/Loading";
+import EditTrigger from "../../components/EditTrigger";
+import EditActionModal from "../../components/ActionModal/EditActionModal";
 
 // builder page
 
@@ -24,7 +26,7 @@ const Workflow = () => {
             <div className="flex flex-col items-center justify-center">
               {/* render trigger if already added one trigger */}
               {triggers.length > 0 ? (
-                <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-52 rounded-md">
+                <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-64 h-20 rounded-md">
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-blue-500">
                       Trigger
@@ -33,13 +35,20 @@ const Workflow = () => {
                       {triggers[0]?.name}
                     </span>
                   </div>
-                  <div
-                    onClick={() =>
-                      handleDeleteWorkflowTrigger(triggers[0]?._id)
-                    }
-                    className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
-                  >
-                    <Trash2 size={12} color="gray" />
+                  <div className="flex items-center gap-1">
+                    <EditTrigger
+                      workflowId={workflowId}
+                      workflowTriggers={workflowTriggers}
+                      currentTrigger={triggers[0]}
+                    />
+                    <div
+                      onClick={() =>
+                        handleDeleteWorkflowTrigger(triggers[0]?._id)
+                      }
+                      className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
+                    >
+                      <Trash2 size={12} color="gray" />
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -59,7 +68,7 @@ const Workflow = () => {
                 return (
                   <>
                     {/* <div className="w-[1px] h-10 bg-gray-300"></div> */}
-                    <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-52 rounded-md">
+                    <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-64 h-20 rounded-md">
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-blue-500">
                           Action
@@ -73,11 +82,14 @@ const Workflow = () => {
                           )}
                         </span>
                       </div>
-                      <div
-                        onClick={() => handleDeleteWorkflowAction(item?._id)}
-                        className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
-                      >
-                        <Trash2 size={12} color="gray" />
+                      <div className="flex items-center gap-1">
+                        <EditActionModal workflowId={workflowId} item={item} />
+                        <div
+                          onClick={() => handleDeleteWorkflowAction(item?._id)}
+                          className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
+                        >
+                          <Trash2 size={12} color="gray" />
+                        </div>
                       </div>
                     </div>
                     <div className="w-[1px] h-10 bg-gray-300"></div>

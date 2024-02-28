@@ -3,26 +3,22 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addWorkflows } from "../../store/slices/workflowSlice";
 import { RootState } from "../../store/reducers";
-
-// interface IState {
-//   workflows: Array<any>;
-// }
+import { useSearchParams } from "react-router-dom";
 
 const useData = () => {
   const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+  const token: string | null = searchParams.get("token");
   const workflows = useSelector(
     (state: RootState) => state?.workflowStore?.workflows
   );
 
-  // const [workflows, setWorkflows] = useState<IState["workflows"]>([]);
+  console.log("token ---", token);
 
   const fetchAllWorkflows = async () => {
     try {
-      const { data } = await axios.get(
-        "/api/workflow/all/OMs5rXuCphJxcYqSnmVP9RQAy"
-      );
+      const { data } = await axios.get(`/api/workflow/all/${token}`);
       dispatch(addWorkflows(data?.data));
-      // setWorkflows(data?.data);
       console.log("workflows: ", data);
     } catch (error: any) {
       console.log("Fetching workflows error: ", error?.message);
@@ -31,9 +27,10 @@ const useData = () => {
 
   useEffect(() => {
     fetchAllWorkflows();
-  }, []);
+  }, [token]);
 
   const state = {
+    token,
     workflows,
   };
 

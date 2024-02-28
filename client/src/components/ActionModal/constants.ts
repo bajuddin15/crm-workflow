@@ -18,7 +18,7 @@ export const actionItemTags = [
     "From Number": "{{fromNumber}}",
   },
   {
-    "Message Body": "{{message}}",
+    Message: "{{message}}",
   },
   {
     "Media Url": "{{mediaUrl}}",
@@ -34,5 +34,17 @@ export const actionItemTags = [
   },
   {
     "Delay Formate": "{{delayFormate}}",
+  },
+  {
+    seconds: "seconds",
+  },
+  {
+    minutes: "minutes",
+  },
+  {
+    hours: "hours",
+  },
+  {
+    days: "days",
   },
 ];

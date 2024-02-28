@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { RootState } from "../../store/reducers";
 import { addActions, addTriggers } from "../../store/slices/workflowSlice";
 
@@ -15,18 +15,24 @@ interface IState {
   updateLoading: boolean;
   selectedTrigger: any;
   loading: boolean;
+  deleteWorkflowLoading: boolean;
 }
 
 const useData = () => {
   const params = useParams();
   const dispatch = useDispatch();
   const { id: workflowId } = params;
+  const [searchParams] = useSearchParams();
+  const token: string | null = searchParams.get("token");
+  const navigate = useNavigate();
+
   const triggers = useSelector(
     (state: RootState) => state?.workflowStore?.triggers
   );
   const actions = useSelector(
     (state: RootState) => state?.workflowStore?.actions
   );
+  console.log("token at workflow ---", { token, workflowId });
 
   const [workflow, setWorkflow] = useState<IState["workflow"]>(null);
   const [workflowName, setWorkflowName] = useState<IState["workflowName"]>("");
@@ -40,6 +46,8 @@ const useData = () => {
     useState<IState["selectedTrigger"]>(null);
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
+  const [deleteWorkflowLoading, setDeleteWorkflowLoading] =
+    useState<IState["deleteWorkflowLoading"]>(false);
   console.log("params: ", params);
 
   const fetchWorkflowTriggers = async () => {
@@ -160,6 +168,31 @@ const useData = () => {
     }
   };
 
+  const handleDeleteWorkflow = async (workflowId: string | undefined) => {
+    if (!workflowId) {
+      toast.error("workflow not found");
+      return;
+    }
+    try {
+      setDeleteWorkflowLoading(true);
+      const { data } = await axios.delete(`/api/workflow/${workflowId}`);
+      if (data && data.success) {
+        toast.success(data?.message);
+        navigate(`/?token=${token}`);
+      } else {
+        toast.error(data?.message);
+      }
+      setDeleteWorkflowLoading(false);
+    } catch (error: any) {
+      let errResp = error?.response?.data;
+      if (errResp) {
+        toast.error(errResp?.message);
+      } else {
+        toast.error(error?.message);
+      }
+    }
+  };
+
   useEffect(() => {
     Promise.all([
       fetchSingleWorkflow(),
@@ -169,6 +202,7 @@ const useData = () => {
   }, []);
 
   const state = {
+    token,
     workflowId,
     triggers,
     actions,
@@ -178,6 +212,7 @@ const useData = () => {
     updateLoading,
     selectedTrigger,
     loading,
+    deleteWorkflowLoading,
   };
 
   return {
@@ -191,6 +226,7 @@ const useData = () => {
     handleUpdateWorkflow,
     handleDeleteWorkflowAction,
     handleDeleteWorkflowTrigger,
+    handleDeleteWorkflow,
   };
 };
 

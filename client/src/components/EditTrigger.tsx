@@ -1,15 +1,20 @@
-import { Plus, X } from "lucide-react";
+import { Pencil, X } from "lucide-react";
 import React from "react";
 // import component 👇
 import Drawer from "react-modern-drawer";
-import CreateTriggerModal from "./ActionModal/CreateTriggerModal";
+import EditTriggerModal from "./ActionModal/EditTriggerModal";
 
 interface IProps {
   workflowTriggers: Array<any>;
   workflowId: any;
+  currentTrigger: any;
 }
 
-const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
+const EditTrigger: React.FC<IProps> = ({
+  workflowTriggers,
+  workflowId,
+  currentTrigger,
+}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -19,12 +24,9 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
     <>
       <button
         onClick={toggleDrawer}
-        className="p-3 bg-blue-50 cursor-pointer border border-dashed border-blue-500 flex items-center gap-4 w-52 rounded-md"
+        className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
       >
-        <div className="bg-blue-100 w-8 h-8 flex items-center justify-center rounded-md">
-          <Plus size={20} color="blue" />
-        </div>
-        <span className="text-sm text-blue-600">Add New Trigger</span>
+        <Pencil size={12} color="gray" />
       </button>
 
       <Drawer
@@ -43,10 +45,12 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
           </div>
         </div>
         <div className="border-b border-b-gray-200 py-4 flex flex-col">
-          <span className="text-base font-semibold">Workflow Trigger</span>
+          <span className="text-base font-semibold">
+            Update Workflow Trigger
+          </span>
           <span className="text-sm mt-2 text-gray-500">
-            Adds a workflow trigger, and on execution, the contact gets added to{" "}
-            <br />
+            Update a workflow trigger, and on execution, the contact gets added
+            to <br />
             the workflow
           </span>
         </div>
@@ -61,9 +65,10 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
         <div className="my-5 flex flex-col gap-2">
           {workflowTriggers?.map((item, index) => {
             return (
-              <CreateTriggerModal
+              <EditTriggerModal
                 key={index}
                 workflowId={workflowId}
+                currentTrigger={currentTrigger}
                 item={item}
               />
             );
@@ -74,4 +79,4 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
   );
 };
 
-export default AddNewTrigger;
+export default EditTrigger;

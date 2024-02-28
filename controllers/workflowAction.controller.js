@@ -98,7 +98,21 @@ const deleteWorkflowAction = async (req, res) => {
   }
 };
 const editWorkflowAction = async (req, res) => {
-  const { name } = req.body;
+  const {
+    name,
+    delayTime,
+    delayFormate,
+    contactName,
+    email,
+    phoneNumber,
+    groupName,
+    toNumber,
+    fromNumber,
+    message,
+    mediaUrl,
+    templateName,
+    templateLang,
+  } = req.body;
   const { id: actionId } = req.params;
 
   try {
@@ -111,6 +125,18 @@ const editWorkflowAction = async (req, res) => {
     }
 
     action.name = name || action.name;
+    action.delayTime = delayTime || action.delayTime;
+    action.delayFormate = delayFormate || action.delayFormate;
+    action.contactName = contactName || action.contactName;
+    action.email = email || action.email;
+    action.phoneNumber = phoneNumber || action.phoneNumber;
+    action.groupName = groupName || action.groupName;
+    action.toNumber = toNumber || action.toNumber;
+    action.fromNumber = fromNumber || action.fromNumber;
+    action.message = message || action.message;
+    action.mediaUrl = mediaUrl || action.mediaUrl;
+    action.templateName = templateName || action.templateName;
+    action.templateLang = templateLang || action.templateLang;
 
     const updatedAction = await action.save();
     res.status(200).json({
@@ -119,7 +145,7 @@ const editWorkflowAction = async (req, res) => {
       data: updatedAction,
     });
   } catch (error) {
-    console.log("Delete workflow action controller error : ", error.message);
+    console.log("Edit workflow action controller error : ", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

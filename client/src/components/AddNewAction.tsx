@@ -46,13 +46,13 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
             Pick an action for this step
           </span>
         </div>
-        <div className="my-5">
+        {/* <div className="my-5">
           <input
             className="w-full bg-inherit px-4 py-2 outline-none text-sm text-gray-400 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
             type="text"
             placeholder="Search Action.."
           />
-        </div>
+        </div> */}
 
         <div className="my-5 flex flex-col gap-2">
           {workflowActions?.map((item, index) => {
