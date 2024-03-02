@@ -62,9 +62,11 @@ const incomingMessage = async (req, res) => {
         workflowHistoryId = history._id;
 
         const actionFormData = {
-          toNumber:
-            action?.toNumber === "{{toNumber}}" ? toNumber : action?.toNumber,
           fromNumber:
+            (action?.toNumber === "{{toNumber}}"
+              ? toNumber
+              : action?.toNumber) || toNumber,
+          toNumber:
             action?.fromNumber === "{{fromNumber}}"
               ? fromNumber
               : action?.fromNumber,
