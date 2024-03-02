@@ -368,7 +368,10 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
             </div>
 
             <div className="text-sm flex items-center justify-between mt-10">
-              <button className="border border-gray-300 px-4 py-2 rounded-md">
+              <button
+                onClick={handleToggleDrawer}
+                className="border border-gray-300 px-4 py-2 rounded-md"
+              >
                 Cancel
               </button>
               <button

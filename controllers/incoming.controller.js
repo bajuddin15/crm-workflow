@@ -6,10 +6,10 @@ import { calculateTimeInMillis } from "../utils/common.js";
 const incomingMessage = async (req, res) => {
   const {
     msgId,
-    toNumber,
-    fromNumber,
-    message,
-    mediaUrl,
+    to: toNumber,
+    from: fromNumber,
+    msg: message,
+    media: mediaUrl,
     channel,
     email,
     contactName,
@@ -19,8 +19,10 @@ const incomingMessage = async (req, res) => {
     templateLang,
   } = req.body;
 
+  console.log("Req Body Data ---", req.body);
+
   // take token from fromNumber - suppose we have this token
-  const getTokenUri = `https://app.crm-messaging.cloud/index.php/api/fetch-token?provider_number=${fromNumber}`;
+  const getTokenUri = `https://app.crm-messaging.cloud/index.php/api/fetch-token?provider_number=${toNumber}`;
   const { data } = await axios.get(getTokenUri);
   console.log("token", data);
   const token = data?.token;
@@ -69,18 +71,20 @@ const incomingMessage = async (req, res) => {
           message:
             action?.message === "{{message}}" ? message : action?.message,
           mediaUrl:
-            action?.mediaUrl === "{{mediaUrl}}" ? mediaUrl : action?.mediaUrl,
-          email: action?.email === "{{email}}" ? email : action?.email,
+            (action?.mediaUrl === "{{mediaUrl}}"
+              ? mediaUrl
+              : action?.mediaUrl) || "",
+          email: action?.email === "{{contact.email}}" ? email : action?.email,
           phoneNumber:
-            action?.phoneNumber === "{{phoneNumber}}"
-              ? phoneNumber
+            action?.phoneNumber === "{{contact.phoneNumber}}"
+              ? phoneNumber || fromNumber
               : action?.phoneNumber,
           contactName:
-            action?.contactName === "{{contactName}}"
+            action?.contactName === "{{contact.name}}"
               ? contactName
               : action?.contactName,
           groupName:
-            action?.groupName === "{{groupName}}"
+            action?.groupName === "{{contact.groupName}}"
               ? groupName
               : action?.groupName,
           templateName:
@@ -161,6 +165,11 @@ const incomingMessage = async (req, res) => {
             formData.append("tempName", actionFormData.templateName);
           }
           const { data } = await axios.post(url, formData, { headers });
+          console.log("incoming msg whatsapp resp---", {
+            data,
+            formData,
+            actionFormData,
+          });
           if (data && data.status !== 200) {
             if (workflowHistoryId) {
               await WorkflowHistory.findByIdAndUpdate(
@@ -181,15 +190,48 @@ const incomingMessage = async (req, res) => {
               );
             }
           }
-          console.log("incoming msg whatsapp resp---", {
-            data,
-            formData,
-            actionFormData,
-          });
+        } else if (action.unqName === "addContact") {
+          // add contact logic here
+          const url =
+            "https://app.crm-messaging.cloud/index.php/Api/createContact";
+          const headers = {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          };
+
+          const nameParts = actionFormData?.contactName?.split(" ");
+          const fname = nameParts.length > 0 ? nameParts[0] : "";
+          const lname =
+            nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
+          const formData = new FormData();
+          formData.append("phone", actionFormData?.phoneNumber);
+          formData.append("fname", fname);
+          formData.append("lname", lname);
+          formData.append("email", email);
+
+          const { data } = await axios.post(url, formData, { headers });
+          if (data && data.status !== 200) {
+            if (workflowHistoryId) {
+              await WorkflowHistory.findByIdAndUpdate(
+                workflowHistoryId,
+                { status: "failed" },
+                { new: true }
+              );
+            }
+            return res
+              .status(409)
+              .json({ success: false, message: "Action failed." });
+          } else if (data && data.status === 200) {
+            if (workflowHistoryId) {
+              await WorkflowHistory.findByIdAndUpdate(
+                workflowHistoryId,
+                { status: "finshed" },
+                { new: true }
+              );
+            }
+          }
+          console.log("add contact resp ----", { data, actionFormData });
         }
-        //  else if (action.unqName === "addContact") {
-        //   // add contact logic here
-        // }
       }
     }
 
