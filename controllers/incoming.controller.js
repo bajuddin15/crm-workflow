@@ -156,9 +156,6 @@ const incomingMessage = async (req, res) => {
                   { new: true }
                 );
               }
-              return res
-                .status(409)
-                .json({ success: false, message: "Action failed." });
             } else if (data && data.status === 200) {
               if (workflowHistoryId) {
                 await WorkflowHistory.findByIdAndUpdate(
@@ -199,9 +196,6 @@ const incomingMessage = async (req, res) => {
                   { new: true }
                 );
               }
-              return res
-                .status(409)
-                .json({ success: false, message: "Action failed." });
             } else if (data && data.status === 200) {
               if (workflowHistoryId) {
                 await WorkflowHistory.findByIdAndUpdate(
@@ -240,9 +234,6 @@ const incomingMessage = async (req, res) => {
                     { new: true }
                   );
                 }
-                return res
-                  .status(409)
-                  .json({ success: false, message: "Action failed." });
               } else if (data && data.status === 200) {
                 if (workflowHistoryId) {
                   await WorkflowHistory.findByIdAndUpdate(
