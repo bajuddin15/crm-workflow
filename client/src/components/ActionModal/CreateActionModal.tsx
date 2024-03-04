@@ -1,5 +1,5 @@
 import { ChevronRight, PlusCircle, Tag, Trash2, X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import component 👇
 import Drawer from "react-modern-drawer";
 import { actionItemTags } from "./constants";
@@ -207,6 +207,37 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     }
   };
 
+  useEffect(() => {
+    const formDataArray = [];
+    if (item?.unqName === "sendSMS") {
+      formDataArray.push({ key: "toNumber", value: "" });
+      formDataArray.push({ key: "fromNumber", value: "" });
+      formDataArray.push({ key: "message", value: "" });
+      formDataArray.push({ key: "mediaUrl", value: "" });
+    } else if (item?.unqName === "delay") {
+      formDataArray.push({ key: "delayTime", value: "0" });
+      formDataArray.push({ key: "delayFormate", value: "seconds" });
+    } else if (item?.unqName === "sendWhatsAppTemplates") {
+      formDataArray.push({ key: "toNumber", value: "" });
+      formDataArray.push({ key: "fromNumber", value: "" });
+      formDataArray.push({ key: "message", value: "" });
+      formDataArray.push({ key: "mediaUrl", value: "" });
+      formDataArray.push({ key: "templateName", value: "" });
+    } else if (item?.unqName === "sendWhatsAppNonTemplates") {
+      formDataArray.push({ key: "toNumber", value: "" });
+      formDataArray.push({ key: "fromNumber", value: "" });
+      formDataArray.push({ key: "message", value: "" });
+      formDataArray.push({ key: "mediaUrl", value: "" });
+    } else if (item?.unqName === "addContact") {
+      formDataArray.push({ key: "phoneNumber", value: "" });
+      formDataArray.push({ key: "contactName", value: "" });
+      formDataArray.push({ key: "email", value: "" });
+      formDataArray.push({ key: "groupName", value: "" });
+    }
+
+    setFormData(formDataArray);
+  }, [item]);
+
   return (
     <>
       <div
@@ -320,7 +351,10 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
             </div>
 
             <div className="text-sm flex items-center justify-between mt-10">
-              <button className="border border-gray-300 px-4 py-2 rounded-md">
+              <button
+                onClick={handleToggleDrawer}
+                className="border border-gray-300 px-4 py-2 rounded-md"
+              >
                 Cancel
               </button>
               <button
