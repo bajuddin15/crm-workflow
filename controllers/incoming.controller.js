@@ -75,13 +75,13 @@ const incomingMessage = async (req, res) => {
 
           const actionFormData = {
             fromNumber:
-              (action?.toNumber === "{{toNumber}}"
+              (action?.toNumber === "{{fromNumber}}"
                 ? toNumber
                 : action?.toNumber) || toNumber,
             toNumber:
-              action?.fromNumber === "{{fromNumber}}"
+              (action?.fromNumber === "{{toNumber}}"
                 ? fromNumber
-                : action?.fromNumber,
+                : action?.fromNumber) || fromNumber,
             message:
               action?.message === "{{message}}" ? message : action?.message,
             mediaUrl:
