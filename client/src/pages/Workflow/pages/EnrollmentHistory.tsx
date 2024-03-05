@@ -36,14 +36,14 @@ const EnrollmentHistory = () => {
   return (
     <div>
       <Layout>
-        <div className="container py-10">
+        <div className="container py-10 min-h-screen bg-white dark:bg-slate-800">
           {loading ? (
             <div className="flex items-center justify-center">
               <Loading bgColor="rgba(0,0,255,0.5)" />
             </div>
           ) : (
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 dark:border dark:border-gray-700">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
                     <th scope="col" className="px-6 py-6">

@@ -20,7 +20,7 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
     <>
       <button
         onClick={toggleDrawer}
-        className="cursor-pointer w-8 h-8 rounded-full bgwhite flex items-center justify-center border border-gray-300 hover:bg-blue-200"
+        className="cursor-pointer w-8 h-8 rounded-full bg-white flex items-center justify-center border border-gray-300 hover:bg-blue-200 dark:bg-white"
       >
         <Plus size={20} color="rgba(0,0,255,0.5)" />
       </button>
@@ -46,13 +46,6 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
             Pick an action for this step
           </span>
         </div>
-        {/* <div className="my-5">
-          <input
-            className="w-full bg-inherit px-4 py-2 outline-none text-sm text-gray-400 placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
-            type="text"
-            placeholder="Search Action.."
-          />
-        </div> */}
 
         <div className="my-5 flex flex-col gap-2">
           {workflowActions?.map((item, index) => {

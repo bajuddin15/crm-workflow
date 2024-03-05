@@ -3,6 +3,7 @@ import { ChevronLeft, Pencil } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import useData from "./data";
 import Loading from "../../components/Loading";
+import Switcher from "../../components/Switcher";
 
 interface IProps {
   children: ReactNode;
@@ -39,7 +40,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
   return (
     <div className="flex flex-col">
       {/* header */}
-      <div className="container h-14 border-b border-b-gray-200 text-sm flex items-center justify-between">
+      <div className="container h-14 border-b border-b-gray-200 dark:border-b-gray-700 text-sm flex items-center justify-between bg-white text-black dark:bg-slate-800 dark:text-white">
         <Link to={`/?token=${token}`}>
           <div className="flex items-center gap-2 cursor-pointer">
             <ChevronLeft size={28} />
@@ -56,6 +57,10 @@ const Layout: React.FC<IProps> = ({ children }) => {
           <Pencil size={16} />
         </div>
         <div className="flex items-center gap-4">
+          {/* light and dark mode switch */}
+          <div>
+            <Switcher />
+          </div>
           <button
             onClick={() => handleDeleteWorkflow(workflowId)}
             className="w-16 h-9 flex items-center justify-center text-white bg-red-600 hover:bg-red-700 rounded-md"
@@ -76,7 +81,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
       </div>
 
       {/* menu header */}
-      <div className="bg-white container flex items-center justify-between border-b border-b-gray-200 ">
+      <div className="container bg-white flex items-center justify-between border-b border-b-gray-200 dark:border-b-gray-700 dark:bg-slate-800">
         <div></div>
         <div className="flex items-center gap-8 text-sm">
           <Link
@@ -84,8 +89,8 @@ const Layout: React.FC<IProps> = ({ children }) => {
             className={`py-3 tracking-wide ${
               pathname === `/workflow/${workflowId}/`
                 ? "border-b-2 border-b-blue-500 text-blue-500"
-                : "border-b-2 border-white"
-            }  hover:text-blue-500 hover:border-b-2 hover:border-blue-500`}
+                : "border-b-2 border-white dark:border-slate-800"
+            }  hover:text-blue-500 hover:border-b-2 hover:border-blue-500 text-black dark:text-white`}
           >
             Builder
           </Link>
@@ -94,8 +99,8 @@ const Layout: React.FC<IProps> = ({ children }) => {
             className={`py-3 tracking-wide ${
               pathname === `/workflow/${workflowId}/settings/`
                 ? "border-b-2 border-b-blue-500 text-blue-500"
-                : "border-b-2 border-white"
-            } hover:text-blue-500 hover:border-b-2 hover:border-blue-500`}
+                : "border-b-2 border-white dark:border-slate-800"
+            } hover:text-blue-500 hover:border-b-2 hover:border-blue-500 text-black dark:text-white`}
           >
             Settings
           </Link>
@@ -104,8 +109,8 @@ const Layout: React.FC<IProps> = ({ children }) => {
             className={`py-3 tracking-wide ${
               pathname === `/workflow/${workflowId}/status/`
                 ? "border-b-2 border-b-blue-500 text-blue-500"
-                : "border-b-2 border-white"
-            } hover:text-blue-500 hover:border-b-2 hover:border-blue-500`}
+                : "border-b-2 border-white dark:border-slate-800"
+            } hover:text-blue-500 hover:border-b-2 hover:border-blue-500 text-black dark:text-white`}
           >
             Enrollment History
           </Link>

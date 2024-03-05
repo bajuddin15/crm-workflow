@@ -4,7 +4,9 @@ const Settings = () => {
   return (
     <div>
       <Layout>
-        <div>settings</div>
+        <div className="bg-white min-h-screen dark:bg-slate-800 dark:text-white">
+          settings
+        </div>
       </Layout>
     </div>
   );

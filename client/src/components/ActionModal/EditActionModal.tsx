@@ -1,12 +1,9 @@
 import { ChevronRight, Pencil, PlusCircle, Tag, Trash2, X } from "lucide-react";
 import React, { useEffect, useState } from "react";
-// import component 👇
 import Drawer from "react-modern-drawer";
 import { actionItemTags } from "./constants";
-// import Loading from "../Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
-// import Select from "react-select";
 import { addActions } from "../../store/slices/workflowSlice";
 import { useDispatch } from "react-redux";
 import Loading from "../Loading";
@@ -44,7 +41,7 @@ function Row({
     <>
       <div className="flex items-center gap-4">
         <input
-          className="w-1/3 border border-gray-300 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md"
+          className="w-1/3 border border-gray-300 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md bg-white"
           type="text"
           value={formData.key}
           onChange={(e) => onChangeKey(index, e.target.value)}
@@ -52,7 +49,7 @@ function Row({
         />
         <div className="w-1/2 flex items-center border border-gray-300 p-2 focus:ring-1 focus:ring-blue-500 rounded-md">
           <input
-            className="border-none outline-none"
+            className="border-none outline-none bg-white"
             type="text"
             value={formData.value}
             onChange={(e) => onChangeValue(index, e.target.value)}
@@ -81,10 +78,6 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
   const [showTagsOfIndex, setShowTagsOfIndex] = useState<number>(-1);
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
-  // const [selectedDelayFormate, setSelectedDelayFormate] = useState({
-  //   value: "seconds",
-  //   label: "Seconds",
-  // });
 
   const [values, setValues] = useState<IState["values"]>({
     workflowId: workflowId,
@@ -182,9 +175,9 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     } else if (tagValue === "{{contact.groupName}}") {
       handleChangeKey(index, "groupName");
     } else if (tagValue === "{{toNumber}}") {
-      handleChangeKey(index, "toNumber");
-    } else if (tagValue === "{{fromNumber}}") {
       handleChangeKey(index, "fromNumber");
+    } else if (tagValue === "{{fromNumber}}") {
+      handleChangeKey(index, "toNumber");
     } else if (tagValue === "{{message}}") {
       handleChangeKey(index, "message");
     } else if (tagValue === "{{mediaUrl}}") {

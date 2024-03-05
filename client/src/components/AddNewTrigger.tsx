@@ -16,12 +16,12 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
   };
 
   return (
-    <>
+    <div>
       <button
         onClick={toggleDrawer}
-        className="p-3 bg-blue-50 cursor-pointer border border-dashed border-blue-500 flex items-center gap-4 w-52 rounded-md"
+        className="p-3 bg-blue-50 cursor-pointer border border-dashed border-blue-500 flex items-center gap-4 w-64 h-20 rounded-md dark:bg-slate-800"
       >
-        <div className="bg-blue-100 w-8 h-8 flex items-center justify-center rounded-md">
+        <div className="bg-blue-100 w-8 h-8 flex items-center justify-center rounded-md dark:bg-white">
           <Plus size={20} color="blue" />
         </div>
         <span className="text-sm text-blue-600">Add New Trigger</span>
@@ -50,13 +50,6 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
             the workflow
           </span>
         </div>
-        {/* <div className="my-5">
-          <input
-            className="w-full bg-inherit px-4 py-2 outline-none text-sm text-gray-600 placeholder:text-sm placeholder:font-normal placeholder:text-gray-600 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
-            type="text"
-            placeholder="Search Triggers"
-          />
-        </div> */}
 
         <div className="my-5 flex flex-col gap-2">
           {workflowTriggers?.map((item, index) => {
@@ -70,7 +63,7 @@ const AddNewTrigger: React.FC<IProps> = ({ workflowTriggers, workflowId }) => {
           })}
         </div>
       </Drawer>
-    </>
+    </div>
   );
 };
 

@@ -15,7 +15,7 @@ const Home = () => {
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
           <span className="text-lg font-semibold">Workflow List</span>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm text-gray-500 dark:text-white">
             Create and manage Workflows to automate business processes, <br />{" "}
             improve efficiency, and increase conversions.
           </span>
