@@ -10,7 +10,7 @@ const Home = () => {
   const navigate = useNavigate();
   console.log("...workflows", workflows);
   return (
-    <div className="container py-20">
+    <div className="container py-20 min-h-screen dark:bg-slate-800">
       {/* headers */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">

@@ -15,7 +15,7 @@ const Workflow = () => {
     useData();
   const { workflowId, triggers, actions, loading } = state;
   return (
-    <div className="bg-white">
+    <div className="bg-white min-h-screen dark:bg-slate-800">
       <Layout>
         <div className="flex flex-col items-center justify-center bg-gray-50 dark:bg-slate-800 min-h-[80vh] py-20">
           {loading ? (
@@ -67,7 +67,6 @@ const Workflow = () => {
               {actions?.map((item, index) => {
                 return (
                   <>
-                    {/* <div className="w-[1px] h-10 bg-gray-300"></div> */}
                     <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-64 h-20 rounded-md dark:bg-slate-800">
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-blue-500">

@@ -11,10 +11,6 @@ export const workflowActions = [
     name: "Delay",
     unqName: "delay",
   },
-  // {
-  //   name: "Filter",
-  //   unqName: "filter",
-  // },
   {
     name: "Send WhatsApp Templates",
     unqName: "sendWhatsAppTemplates",
@@ -23,6 +19,10 @@ export const workflowActions = [
     name: "Send WhatsApp Non-Templates",
     unqName: "sendWhatsAppNonTemplates",
   },
+  // {
+  //   name: "REST API",
+  //   unqName: "restApi",
+  // },
 ];
 
 export const workflowTriggers = [
@@ -38,4 +38,8 @@ export const workflowTriggers = [
     name: "Incoming WhatsApp",
     unqName: "incomingWhatsApp",
   },
+  // {
+  //   name: "Webhook",
+  //   unqName: "webhook",
+  // },
 ];

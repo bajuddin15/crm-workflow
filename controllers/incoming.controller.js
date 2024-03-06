@@ -57,21 +57,26 @@ const incomingMessage = async (req, res) => {
 
     await Promise.all(
       workflows.map(async (myworkflow) => {
-        let triggers = myworkflow.triggers;
+        const triggers = myworkflow.triggers;
         let actions = myworkflow.actions;
+
+        if (triggers?.length === 0) {
+          return res
+            .status(409)
+            .json({ success: false, message: "You have not any trigger" });
+        }
+
+        const myTrigger = triggers[0];
+
+        if (
+          (myTrigger?.unqName === "incomingSMS" && channel === "whatsapp") ||
+          (myTrigger?.unqName === "incomingWhatsApp" && channel === "sms")
+        ) {
+          return;
+        }
 
         for (let j = 0; j < actions.length; j++) {
           let action = actions[j];
-
-          // waiting history
-          const history = new WorkflowHistory({
-            contact: toNumber,
-            status: "waiting",
-            actionId: action._id,
-            workflowId: myworkflow._id,
-          });
-          await history.save();
-          workflowHistoryId = history._id;
 
           const actionFormData = {
             fromNumber:
@@ -112,6 +117,21 @@ const incomingMessage = async (req, res) => {
                 : action?.templateLang,
             channel,
           };
+
+          // waiting history
+          const history = new WorkflowHistory({
+            contact: actionFormData?.toNumber,
+            status: "waiting",
+            actionId: action._id,
+            workflowId: myworkflow._id,
+          });
+          await history.save();
+          workflowHistoryId = history._id;
+
+          console.log(
+            "action form data which is used in action exectutation -- ",
+            actionFormData
+          );
 
           const formData = new FormData();
 
@@ -166,7 +186,7 @@ const incomingMessage = async (req, res) => {
                 );
               }
             }
-            console.log("send sms resp--", data);
+            console.log("send sms resp--", { data, formData });
           } else if (
             (action.unqName === "sendWhatsAppTemplates" ||
               action.unqName === "sendWhatsAppNonTemplates") &&
