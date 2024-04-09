@@ -43,7 +43,7 @@ const deleteWorkflow = async (req, res) => {
 };
 const editWorkflow = async (req, res) => {
   const { id: workflowId } = req.params;
-  const { name, description, isActive, status } = req.body;
+  const { name, description, isActive, status, apiResponse } = req.body;
   try {
     const workflow = await Workflow.findById(workflowId);
     if (!workflow) {
@@ -56,6 +56,12 @@ const editWorkflow = async (req, res) => {
     workflow.description = description || workflow.description;
     workflow.isActive = isActive || workflow.isActive;
     workflow.status = status || workflow.status;
+    if (apiResponse && Array.isArray(apiResponse)) {
+      workflow.apiResponse = [
+        ...(workflow.apiResponse || []), // Existing apiResponse or an empty array
+        ...apiResponse, // New apiResponse from request body
+      ];
+    }
 
     // save the updated workflow
     const updatedWorkflow = await workflow.save();

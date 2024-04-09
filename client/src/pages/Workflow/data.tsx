@@ -4,7 +4,13 @@ import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { RootState } from "../../store/reducers";
-import { addActions, addTriggers } from "../../store/slices/workflowSlice";
+import {
+  addActions,
+  addTriggers,
+  setActionItemTags,
+  setCurrentWorkflow,
+} from "../../store/slices/workflowSlice";
+import { itemTags, parseDataInJSON } from "../../utils";
 
 interface IState {
   triggers: Array<any>;
@@ -32,7 +38,6 @@ const useData = () => {
   const actions = useSelector(
     (state: RootState) => state?.workflowStore?.actions
   );
-  console.log("token at workflow ---", { token, workflowId });
 
   const [workflow, setWorkflow] = useState<IState["workflow"]>(null);
   const [workflowName, setWorkflowName] = useState<IState["workflowName"]>("");
@@ -48,7 +53,6 @@ const useData = () => {
   const [loading, setLoading] = useState<IState["loading"]>(false);
   const [deleteWorkflowLoading, setDeleteWorkflowLoading] =
     useState<IState["deleteWorkflowLoading"]>(false);
-  console.log("params: ", params);
 
   const fetchWorkflowTriggers = async () => {
     setLoading(true);
@@ -83,11 +87,13 @@ const useData = () => {
     try {
       const { data } = await axios.get(`/api/workflow/${workflowId}`);
       if (data && data?.success) {
+        let parsedRespData = parseDataInJSON(data?.data?.apiResponse);
         setWorkflow(data?.data);
+        dispatch(setCurrentWorkflow(data?.data));
+        dispatch(setActionItemTags([...itemTags, ...parsedRespData]));
         setWorkflowName(data?.data?.name);
         setWorkflowStatus(data?.data?.status);
       }
-      console.log("workflow --", { data, workflowId });
     } catch (error: any) {
       console.log("Fetch workflow error : ", error.message);
     }
@@ -95,10 +101,6 @@ const useData = () => {
 
   const handleUpdateWorkflow = async () => {
     setUpdateLoading(true);
-    console.log("updated workflow data --", {
-      name: workflowName,
-      status: workflowStatus,
-    });
     const formData = {
       name: workflowName,
       status: workflowStatus,
@@ -118,8 +120,6 @@ const useData = () => {
   };
 
   const handleDeleteWorkflowAction = async (actionId: string) => {
-    console.log("actionId--", actionId);
-
     const requestData = {
       workflowId: workflowId,
     };
@@ -143,8 +143,6 @@ const useData = () => {
     }
   };
   const handleDeleteWorkflowTrigger = async (triggerId: string) => {
-    console.log("actionId--", triggerId);
-
     const requestData = {
       workflowId: workflowId,
     };

@@ -15,7 +15,6 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
     setIsOpen((prevState) => !prevState);
   };
 
-  console.log("data", workflowActions);
   return (
     <>
       <button

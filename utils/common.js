@@ -12,3 +12,16 @@ export const calculateTimeInMillis = (timeValue, timeFormat) => {
       return 0;
   }
 };
+
+export const findValueByKey = (apiResponse, format) => {
+  const key = format.replace(/^{{|}}$/g, "");
+
+  let value = "";
+  for (const item of apiResponse) {
+    if (item.key === key) {
+      value = item.value;
+      break;
+    }
+  }
+  return value;
+};

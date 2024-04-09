@@ -36,6 +36,12 @@ const workflowSchema = new mongoose.Schema(
         ref: "WorkflowAction",
       },
     ],
+    apiResponse: [
+      {
+        key: String,
+        value: String,
+      },
+    ],
   },
   { timestamps: true }
 );

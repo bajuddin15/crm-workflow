@@ -4,12 +4,70 @@ interface workflowState {
   workflows: Array<any>;
   triggers: Array<any>;
   actions: Array<any>;
+  currentWorkflow: any;
+  actionItemTags: Array<any>;
 }
+
+const tags = [
+  {
+    "Contact Name": "{{contact.name}}",
+  },
+  {
+    "Contact Email": "{{contact.email}}",
+  },
+  {
+    "Contact Phone": "{{contact.phoneNumber}}",
+  },
+  {
+    "Group Name": "{{contact.groupName}}",
+  },
+  {
+    "To Number": "{{toNumber}}",
+  },
+  {
+    "From Number": "{{fromNumber}}",
+  },
+  {
+    Message: "{{message}}",
+  },
+  {
+    "Media Url": "{{mediaUrl}}",
+  },
+  {
+    "Template Name": "{{templateName}}",
+  },
+  {
+    "Template Language": "{{templateLang}}",
+  },
+  {
+    "Delay Time": "{{delayTime}}",
+  },
+  {
+    "Delay Formate": "{{delayFormate}}",
+  },
+  {
+    seconds: "seconds",
+  },
+  {
+    minutes: "minutes",
+  },
+  {
+    hours: "hours",
+  },
+  {
+    days: "days",
+  },
+  {
+    voiceText: "{{voiceText}}",
+  },
+];
 
 const initialState: workflowState = {
   workflows: [],
   triggers: [],
   actions: [],
+  currentWorkflow: null,
+  actionItemTags: tags,
 };
 
 const workflowSlice = createSlice({
@@ -25,9 +83,21 @@ const workflowSlice = createSlice({
     addActions: (state, action: PayloadAction<any>) => {
       state.actions = action.payload;
     },
+    setCurrentWorkflow: (state, action) => {
+      state.currentWorkflow = action.payload;
+    },
+    setActionItemTags: (state, action) => {
+      state.actionItemTags = action.payload;
+    },
   },
 });
 
-export const { addWorkflows, addTriggers, addActions } = workflowSlice.actions;
+export const {
+  addWorkflows,
+  addTriggers,
+  addActions,
+  setCurrentWorkflow,
+  setActionItemTags,
+} = workflowSlice.actions;
 
 export default workflowSlice.reducer;

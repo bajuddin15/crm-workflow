@@ -2,7 +2,7 @@ import Workflow from "../models/workflow.model.js";
 import WorkflowTrigger from "../models/workflowTrigger.model.js";
 
 const createWorkflowTrigger = async (req, res) => {
-  const { name, unqName, workflowId } = req.body;
+  const { name, unqName, workflowId, baseUrl } = req.body;
 
   try {
     const newWorkflowTrigger = new WorkflowTrigger({
@@ -10,6 +10,10 @@ const createWorkflowTrigger = async (req, res) => {
       unqName,
       workflowId,
     });
+    if (unqName === "webhook") {
+      const webhookUrl = `${baseUrl}/workflow/sendwebhookdata/${newWorkflowTrigger?._id}`;
+      newWorkflowTrigger.webhook_url = webhookUrl;
+    }
 
     // find workflow and push this action
     const workflow = await Workflow.findById(workflowId);

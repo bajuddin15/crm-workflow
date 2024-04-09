@@ -7,6 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { addTriggers } from "../../store/slices/workflowSlice";
 import { useDispatch } from "react-redux";
+import useData from "./data";
 
 interface IProps {
   item: any;
@@ -25,6 +26,7 @@ const EditTriggerModal: React.FC<IProps> = ({
   currentTrigger,
 }) => {
   const dispatch = useDispatch();
+  const { handleCopy } = useData();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
@@ -136,6 +138,39 @@ const EditTriggerModal: React.FC<IProps> = ({
                 value={values.name}
                 onChange={(e) => setValues({ ...values, name: e.target.value })}
               />
+
+              {/* for webhook trigger */}
+              {item?.unqName === "webhook" && (
+                <div className="mt-5 flex flex-col gap-5">
+                  <div className="flex flex-col gap-1 text-sm">
+                    <label htmlFor="webhookUrl" className="font-medium">
+                      Webhook URL
+                    </label>
+                    <div
+                      onClick={() => handleCopy(currentTrigger?.webhook_url)}
+                      className="flex items-center gap-2 border border-gray-300 rounded-tl-md rounded-bl-md pl-2 hover:bg-gray-100"
+                    >
+                      <span
+                        style={{ scrollbarWidth: "none" }}
+                        className="text-sm overflow-x-auto"
+                      >
+                        {currentTrigger?.webhook_url}
+                      </span>
+                      <span className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer py-2 px-4 rounded-tr-md rounded-br-md">
+                        Copy
+                      </span>
+                    </div>
+                    <span className="text-xs text-gray-500">
+                      Copy the webhook URL and add it under the webhook section
+                      of the application you're willing to integrate with. Once
+                      you're done with adding the webhook URL, then do a test
+                      submission/record in that application in order to capture
+                      the webhook response here. Note that webhook URL is unique
+                      for every workflow.
+                    </span>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* footer */}

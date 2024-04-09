@@ -3,6 +3,7 @@ import FormData from "form-data";
 import Workflow from "../models/workflow.model.js";
 import WorkflowHistory from "../models/workflowHistory.model.js";
 import { calculateTimeInMillis } from "../utils/common.js";
+import { getProviderDetails, getTokenFromNumber } from "../utils/api.js";
 
 const incomingMessage = async (req, res) => {
   const {
@@ -59,6 +60,7 @@ const incomingMessage = async (req, res) => {
       workflows.map(async (myworkflow) => {
         const triggers = myworkflow.triggers;
         let actions = myworkflow.actions;
+        const apiResponse = myworkflow.apiResponse;
 
         if (triggers?.length === 0) {
           return res
@@ -116,6 +118,10 @@ const incomingMessage = async (req, res) => {
                 ? templateLang
                 : action?.templateLang,
             channel,
+            voiceText:
+              action?.voiceText === "{{voiceText}}"
+                ? req.body?.voiceText
+                : action?.voiceText,
           };
 
           // waiting history
@@ -134,6 +140,7 @@ const incomingMessage = async (req, res) => {
           );
 
           const formData = new FormData();
+          console.log("unqname of action : ", action.unqName);
 
           if (action.unqName === "delay") {
             // delay if I have delay action
@@ -277,6 +284,72 @@ const incomingMessage = async (req, res) => {
               return res
                 .status(500)
                 .json({ success: false, message: "Failed to add contact." });
+            }
+          } else if (action.unqName === "outgoingVoiceCall") {
+            let formData = {
+              to: actionFormData?.toNumber,
+              from: actionFormData?.fromNumber,
+              text: actionFormData?.voiceText,
+            };
+
+            // const token = await getTokenFromNumber(formData?.from);
+
+            if (token) {
+              const resData = await getProviderDetails(token, formData?.from);
+              if (resData && resData?.provider_number) {
+                const resForm = {
+                  provider_number:
+                    resData?.provider_number[0] === "+"
+                      ? resData?.provider_number
+                      : `+${resData?.provider_number}`,
+                  account_sid: resData?.account_sid,
+                  twiml_app_sid: resData?.twiml_app_sid,
+                  twilio_api_key: resData?.twilio_api_key,
+                  twilio_api_secret: resData?.twilio_api_secret,
+                  twilio_auth_token: resData?.account_token,
+                };
+                formData = { ...formData, ...resForm };
+
+                const { data } = await axios.post(
+                  "https://voice.crm-messaging.cloud/api/makeTextToSpeechCall",
+                  formData
+                );
+                if (data && data?.success) {
+                  // it means we have done call text so update history that it action finshed
+                  if (workflowHistoryId) {
+                    await WorkflowHistory.findByIdAndUpdate(
+                      workflowHistoryId,
+                      { status: "finshed" },
+                      { new: true }
+                    );
+                  }
+                } else {
+                  if (workflowHistoryId) {
+                    await WorkflowHistory.findByIdAndUpdate(
+                      workflowHistoryId,
+                      { status: "failed" },
+                      { new: true }
+                    );
+                  }
+                }
+              } else {
+                if (workflowHistoryId) {
+                  await WorkflowHistory.findByIdAndUpdate(
+                    workflowHistoryId,
+                    { status: "failed" },
+                    { new: true }
+                  );
+                }
+              }
+            } else {
+              console.log("Token not found");
+              if (workflowHistoryId) {
+                await WorkflowHistory.findByIdAndUpdate(
+                  workflowHistoryId,
+                  { status: "failed" },
+                  { new: true }
+                );
+              }
             }
           }
         }

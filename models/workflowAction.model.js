@@ -57,6 +57,34 @@ const workflowActionSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workflow",
     },
+    actionEventMethod: {
+      type: String,
+      enum: ["GET", "POST"],
+    },
+    endpointUrl: {
+      type: String,
+    },
+    payloadType: {
+      type: String,
+    },
+    authType: {
+      type: String,
+    },
+    headers: [
+      {
+        key: String,
+        value: String,
+      },
+    ],
+    parameters: [
+      {
+        key: String,
+        value: String,
+      },
+    ],
+    voiceText: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

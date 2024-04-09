@@ -19,6 +19,12 @@ const createWorkflowAction = async (req, res) => {
     mediaUrl,
     templateName,
     templateLang,
+    actionEventMethod,
+    endpointUrl,
+    payloadType,
+    authType,
+    headers,
+    parameters,
   } = req.body;
 
   try {
@@ -39,6 +45,13 @@ const createWorkflowAction = async (req, res) => {
       mediaUrl,
       templateName,
       templateLang,
+      actionEventMethod,
+      endpointUrl,
+      payloadType,
+      authType,
+      headers,
+      parameters,
+      ...req.body,
     });
 
     // find workflow and push this action
@@ -112,6 +125,12 @@ const editWorkflowAction = async (req, res) => {
     mediaUrl,
     templateName,
     templateLang,
+    actionEventMethod,
+    endpointUrl,
+    payloadType,
+    authType,
+    headers,
+    parameters,
   } = req.body;
   const { id: actionId } = req.params;
 
@@ -137,6 +156,13 @@ const editWorkflowAction = async (req, res) => {
     action.mediaUrl = mediaUrl || action.mediaUrl;
     action.templateName = templateName || action.templateName;
     action.templateLang = templateLang || action.templateLang;
+    action.actionEventMethod = actionEventMethod || action.actionEventMethod;
+    action.endpointUrl = endpointUrl || action.endpointUrl;
+    action.payloadType = payloadType || action.payloadType;
+    action.authType = authType || action.authType;
+    action.headers = headers || action.headers;
+    action.parameters = parameters || action.parameters;
+    action.voiceText = req.body.voiceText || action.voiceText;
 
     const updatedAction = await action.save();
     res.status(200).json({

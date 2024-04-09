@@ -32,11 +32,6 @@ const Layout: React.FC<IProps> = ({ children }) => {
   const location = useLocation();
   const pathname = location?.pathname;
 
-  console.log("location.pathname", {
-    pathname,
-    path: `/workflow/${workflowId}/?token=${token}`,
-  });
-
   return (
     <div className="flex flex-col">
       {/* header */}
@@ -47,14 +42,17 @@ const Layout: React.FC<IProps> = ({ children }) => {
             <span className="font-medium">Back to Workflows</span>
           </div>
         </Link>
-        <div className="flex items-center gap-4 hover:bg-gray-100 px-3 hover:border-2 hover:border-gray-500">
+        <div className="flex items-center gap-4 hover:bg-gray-100 px-3 rounded-md hover:border-2 hover:border-gray-500 dark:bg-slate-700 dark:border-slate-500">
           <input
+            id="workflowName"
             className="py-2 w-full bg-inherit border-none outline-none"
             type="text"
             value={workflowName}
             onChange={(e) => setWorkflowName(e.target.value)}
           />
-          <Pencil size={16} />
+          <label htmlFor="workflowName" className="cursor-pointer">
+            <Pencil size={16} />
+          </label>
         </div>
         <div className="flex items-center gap-4">
           {/* light and dark mode switch */}

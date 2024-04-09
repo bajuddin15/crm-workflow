@@ -13,13 +13,10 @@ const useData = () => {
     (state: RootState) => state?.workflowStore?.workflows
   );
 
-  console.log("token ---", token);
-
   const fetchAllWorkflows = async () => {
     try {
       const { data } = await axios.get(`/api/workflow/all/${token}`);
       dispatch(addWorkflows(data?.data));
-      console.log("workflows: ", data);
     } catch (error: any) {
       console.log("Fetching workflows error: ", error?.message);
     }

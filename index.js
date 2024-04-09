@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import path from "path";
+import cors from "cors";
 import connectDB from "./config/db.js";
 
 import workflowRoutes from "./routes/workflow.route.js";
@@ -11,6 +12,8 @@ import workflowActionRoutes from "./routes/workflowAction.route.js";
 import incomingRoutes from "./routes/incoming.route.js";
 import workflowHistoryRoutes from "./routes/workflowHistory.route.js";
 
+import webhookRoutes from "./routes/webhook.route.js";
+
 const __dirname = path.resolve();
 dotenv.config();
 
@@ -20,6 +23,7 @@ const app = express();
 // middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(cors());
 
 // all routes
 app.use("/api/workflow", workflowRoutes);
@@ -30,12 +34,17 @@ app.use("/api/workflowAction", workflowActionRoutes);
 app.use("/api/incoming", incomingRoutes);
 app.use("/api/workflowHistory", workflowHistoryRoutes);
 
+//
+app.use("/workflow/sendwebhookdata", webhookRoutes);
+
 // bundle frontend code here i mean dist folder
 app.use(express.static(path.join(__dirname, "/client/dist")));
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "/client", "dist", "index.html"));
 });
+
+// listen all requests resposes
 
 // Server listening and database connection
 const PORT = process.env.PORT ?? 5000;

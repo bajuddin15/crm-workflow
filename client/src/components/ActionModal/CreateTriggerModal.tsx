@@ -7,6 +7,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { addTriggers } from "../../store/slices/workflowSlice";
 import { useDispatch } from "react-redux";
+import useData from "./data";
 
 interface IProps {
   item: any;
@@ -20,9 +21,11 @@ interface IState {
 
 const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
   const dispatch = useDispatch();
+  const { handleCopy } = useData();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
+  const [newTrigger, setNewTrigger] = useState<any>(null);
 
   const [values, setValues] = useState<IState["values"]>({
     workflowId: workflowId,
@@ -48,22 +51,30 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
   };
 
   //   action created
-  const handleSubmit = async (e: any) => {
-    e.preventDefault();
-    console.log("form values --", values);
+  const handleSubmit = async () => {
+    const baseUrl = window.location.origin;
+    let formData = { ...values };
+    if (item?.unqName === "webhook") {
+      formData = { ...values, baseUrl };
+    }
+
     setLoading(true);
     try {
-      const { data } = await axios.post("/api/workflowTrigger/create", values);
+      const { data } = await axios.post(
+        "/api/workflowTrigger/create",
+        formData
+      );
       if (data && data.success) {
+        setNewTrigger(data?.data);
         toast.success(data?.message);
         fetchWorkflowTriggers();
-        handleToggleDrawer();
+        if (item?.unqName !== "webhook") {
+          handleToggleDrawer();
+        }
       } else {
         toast.error(data?.message);
       }
-      console.log("action created--", data);
     } catch (error: any) {
-      console.log("Action creation Error : ", error);
       if (error?.response) {
         toast.error(error?.response?.data?.message);
       } else {
@@ -121,23 +132,73 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
                 value={values.name}
                 onChange={(e) => setValues({ ...values, name: e.target.value })}
               />
+
+              {/* for webhook trigger */}
+              {item?.unqName === "webhook" && (
+                <div className="mt-5 flex flex-col gap-5">
+                  {!newTrigger ? (
+                    <div>
+                      <button
+                        onClick={handleSubmit}
+                        className="text-sm flex items-center gap-2 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600"
+                      >
+                        {loading && <Loading bgColor="#fff" />}
+                        <span> Generate Webhook Url</span>
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-1 text-sm">
+                      <label htmlFor="webhookUrl" className="font-medium">
+                        Webhook URL
+                      </label>
+                      <div
+                        onClick={() =>
+                          handleCopy(
+                            "Bajudhttps://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc"
+                          )
+                        }
+                        className="flex items-center gap-2 border border-gray-300 rounded-tl-md rounded-bl-md pl-2 hover:bg-gray-100"
+                      >
+                        <span
+                          style={{ scrollbarWidth: "none" }}
+                          className="text-sm overflow-x-auto"
+                        >
+                          https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc
+                        </span>
+                        <span className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer py-2 px-4 rounded-tr-md rounded-br-md">
+                          Copy
+                        </span>
+                      </div>
+                      <span className="text-xs text-gray-500">
+                        Copy the webhook URL and add it under the webhook
+                        section of the application you're willing to integrate
+                        with. Once you're done with adding the webhook URL, then
+                        do a test submission/record in that application in order
+                        to capture the webhook response here. Note that webhook
+                        URL is unique for every workflow.
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
-            {/* footer */}
-            <div className="flex items-center justify-between my-5">
-              <button
-                onClick={handleToggleDrawer}
-                className="w-16 h-10 flex items-center justify-center  bg-white border border-gray-300  hover:bg-gray-100 rounded-md"
-              >
-                <span>Cancel</span>
-              </button>
-              <button
-                onClick={handleSubmit}
-                className="w-16 h-10 flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 rounded-md"
-              >
-                {loading ? <Loading bgColor="#fff" /> : <span>Save</span>}
-              </button>
-            </div>
+            {!(item?.unqName === "webhook") && (
+              <div className="flex items-center justify-between my-5">
+                <button
+                  onClick={handleToggleDrawer}
+                  className="w-16 h-10 flex items-center justify-center  bg-white border border-gray-300  hover:bg-gray-100 rounded-md"
+                >
+                  <span>Cancel</span>
+                </button>
+                <button
+                  onClick={handleSubmit}
+                  className="w-16 h-10 flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+                >
+                  {loading ? <Loading bgColor="#fff" /> : <span>Save</span>}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </Drawer>

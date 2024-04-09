@@ -18,6 +18,13 @@ const workflowHistorySchema = new mongoose.Schema(
     contact: {
       type: String,
     },
+    actionName: String,
+    apiResponse: [
+      {
+        key: String,
+        value: String,
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -16,4 +16,26 @@ const getAllHistory = async (req, res) => {
   }
 };
 
-export { getAllHistory };
+const createWorkflowHistory = async (req, res) => {
+  const { workflowId, actionId, status, actionName, apiResponse } = req.body;
+  try {
+    const newHistory = new WorkflowHistory({
+      workflowId,
+      actionId,
+      status,
+      actionName,
+      apiResponse,
+    });
+    await newHistory.save();
+    res.status(201).json({
+      success: true,
+      message: "History created",
+      data: newHistory,
+    });
+  } catch (error) {
+    console.log(`Create workflow history error : `, error?.message);
+    res.status(500).json({ success: false, message: error?.message });
+  }
+};
+
+export { getAllHistory, createWorkflowHistory };
