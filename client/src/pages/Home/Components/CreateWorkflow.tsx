@@ -65,9 +65,11 @@ const CreateWorkflow: React.FC<IProps> = ({ token, fetchAllWorkflows }) => {
           className="modal modal-bottom sm:modal-middle"
           open
         >
-          <div className="modal-box">
+          <div className="modal-box dark:bg-white">
             <div className="mb-8 flex items-center justify-between">
-              <h3 className="font-bold text-lg">Create Workflow</h3>
+              <h3 className="font-bold text-lg text-gray-700">
+                Create Workflow
+              </h3>
 
               <div
                 className="cursor-pointer"
@@ -79,22 +81,22 @@ const CreateWorkflow: React.FC<IProps> = ({ token, fetchAllWorkflows }) => {
 
             <form className="flex flex-col gap-4">
               <div className="space-y-2 flex flex-col">
-                <span>Name *</span>
+                <span className="text-base text-gray-700">Name *</span>
                 <input
                   type="text"
                   placeholder="Name"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-sm dark:bg-white text-gray-600"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-2 flex flex-col">
-                <span>Description</span>
+                <span className="text-base text-gray-700">Description</span>
                 <input
                   type="text"
                   placeholder="Description"
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-sm dark:bg-white text-gray-600"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />

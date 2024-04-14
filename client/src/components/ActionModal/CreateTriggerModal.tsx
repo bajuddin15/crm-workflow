@@ -110,7 +110,9 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
             </div>
           </div>
           <div className="border-b border-b-gray-200 py-4 flex flex-col">
-            <span className="text-base font-semibold">{item?.name}</span>
+            <span className="text-base font-semibold text-gray-700">
+              {item?.name}
+            </span>
             <span className="text-sm mt-2 text-gray-500">
               Automatically creates new contacts or updates existing ones
             </span>
@@ -121,13 +123,13 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
             <div className="flex h-[335px] flex-col gap-1 mb-10">
               <label
                 htmlFor="actionName"
-                className="text-sm font-medium uppercase"
+                className="text-sm text-gray-700 font-medium uppercase"
               >
                 Action name
               </label>
               <input
                 id="actionName"
-                className="w-full bg-inherit px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
+                className="w-full bg-inherit text-gray-600 px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
                 type="text"
                 value={values.name}
                 onChange={(e) => setValues({ ...values, name: e.target.value })}

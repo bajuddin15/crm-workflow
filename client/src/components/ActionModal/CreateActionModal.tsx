@@ -54,7 +54,7 @@ function Row({
     <>
       <div className="flex items-center gap-4">
         <input
-          className="w-1/3 border border-gray-300 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md bg-white"
+          className="w-1/3 border border-gray-300 text-gray-600 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md bg-white"
           type="text"
           value={formData.key}
           onChange={(e) => onChangeKey(index, e.target.value)}
@@ -62,7 +62,7 @@ function Row({
         />
         <div className="w-1/2 flex items-center border border-gray-300 p-2 focus:ring-1 focus:ring-blue-500 rounded-md">
           <input
-            className="border-none outline-none bg-white"
+            className="border-none text-gray-600 outline-none bg-white"
             type="text"
             value={formData.value}
             onChange={(e) => onChangeValue(index, e.target.value)}
@@ -366,7 +366,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
         className="py-4 px-7 overflow-y-auto"
         size={500}
       >
-        <div>
+        <div className="text-gray-600">
           <div className="flex items-center justify-end">
             <div
               onClick={handleToggleDrawer}
@@ -376,14 +376,16 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
             </div>
           </div>
           <div className="border-b border-b-gray-200 py-4 flex flex-col">
-            <span className="text-base font-semibold">{item?.name}</span>
+            <span className="text-base text-gray-700 font-semibold">
+              {item?.name}
+            </span>
             <span className="text-sm mt-2 text-gray-500">
               Automatically creates new contacts or updates existing ones
             </span>
           </div>
 
           {/* main content */}
-          <div className="flex flex-col gap-1 my-4 text-sm">
+          <div className="flex flex-col gap-1 my-4 text-sm text-gray-600">
             <label htmlFor="actionName" className="text-sm">
               Action Name
             </label>
@@ -399,7 +401,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
           {/* ----------------- if action is restApi start -------------  */}
           {item?.unqName === "restApi" && (
             <div className="space-y-5">
-              <div className="text-sm space-y-1">
+              <div className="text-sm space-y-1 text-gray-600">
                 <label htmlFor="actionEventMethod">Action Event Method</label>
                 <Select
                   defaultValue={selectedActionMethod}
@@ -407,14 +409,14 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                   options={actionEventOptions}
                 />
               </div>
-              <div className="text-sm space-y-1">
+              <div className="text-sm space-y-1 text-gray-600">
                 <label htmlFor="apiEndPointUrl">
                   API Endpoint URL{" "}
                   <span className="text-red-500">(Required)</span>
                 </label>
                 <input
                   id="apiEndPointUrl"
-                  className="w-full bg-inherit px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-inherit text-gray-600 px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
                   type="text"
                   placeholder="Enter text or map data."
                   required
@@ -422,7 +424,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                   onChange={(e) => setApiEndpointUrl(e.target.value)}
                 />
               </div>
-              <div className="text-sm space-y-1 flex flex-col">
+              <div className="text-sm space-y-1 flex flex-col text-gray-600">
                 <label htmlFor="payloadType">Payload Type</label>
                 <Select
                   defaultValue={selectedPayloadType}
@@ -430,7 +432,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                   options={payloadTypeOptions}
                 />
               </div>
-              <div className="text-sm space-y-1">
+              <div className="text-sm space-y-1 text-gray-600">
                 <label htmlFor="actionEventMethod">Authentication</label>
                 <Select
                   defaultValue={selectedAuthType}
@@ -438,7 +440,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                   options={authApiOptions}
                 />
               </div>
-              <div className="text-sm flex items-center gap-4">
+              <div className="text-sm flex items-center gap-4 text-gray-600">
                 <input
                   type="checkbox"
                   checked={isAddHeader}
@@ -482,7 +484,9 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
           {!(item?.unqName === "restApi") && (
             <div className=" flex flex-col my-5">
               {/* add item */}
-              <span className="text-sm mb-1">Query String Params</span>
+              <span className="text-sm text-gray-700 mb-1">
+                Query String Params
+              </span>
               <div className="flex flex-col gap-4">
                 {formData.map((data, index) => (
                   <div className="relative">

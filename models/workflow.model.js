@@ -42,6 +42,10 @@ const workflowSchema = new mongoose.Schema(
         value: String,
       },
     ],
+    reEnrollment: {
+      type: Boolean,
+      default: true,
+    },
   },
   { timestamps: true }
 );

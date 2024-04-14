@@ -31,7 +31,7 @@ const ShowApiRespModal: React.FC<IProps> = ({ data }) => {
           className="modal modal-bottom sm:modal-middle"
           open
         >
-          <div className="modal-box">
+          <div className="modal-box bg-white">
             <div className="mb-8 flex items-center justify-between">
               <h3 className="font-bold text-lg">Api Response</h3>
 

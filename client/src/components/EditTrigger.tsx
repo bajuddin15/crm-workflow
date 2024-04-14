@@ -45,7 +45,7 @@ const EditTrigger: React.FC<IProps> = ({
           </div>
         </div>
         <div className="border-b border-b-gray-200 py-4 flex flex-col">
-          <span className="text-base font-semibold">
+          <span className="text-base text-gray-700 font-semibold">
             Update Workflow Trigger
           </span>
           <span className="text-sm mt-2 text-gray-500">

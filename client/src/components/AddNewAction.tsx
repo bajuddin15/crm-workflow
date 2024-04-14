@@ -40,7 +40,7 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
           </div>
         </div>
         <div className="border-b border-b-gray-200 py-4 flex flex-col">
-          <span className="text-base font-semibold">Actions</span>
+          <span className="text-base text-gray-700 font-semibold">Actions</span>
           <span className="text-sm mt-2 text-gray-500">
             Pick an action for this step
           </span>

@@ -12,7 +12,7 @@ const workflowHistorySchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ["failed", "finshed", "waiting"],
+      enum: ["failed", "finshed", "waiting", "skipped"],
       default: "waiting",
     },
     contact: {
