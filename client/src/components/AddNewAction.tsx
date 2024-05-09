@@ -28,6 +28,7 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
         open={isOpen}
         onClose={toggleDrawer}
         direction="right"
+        style={{ scrollbarWidth: "none" }}
         className="py-4 px-7"
         size={500}
       >
@@ -46,7 +47,7 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
           </span>
         </div>
 
-        <div className="my-5 flex flex-col gap-2">
+        <div className="my-5 flex flex-col gap-2 h-[75vh] overflow-y-auto pb-5">
           {workflowActions?.map((item, index) => {
             return (
               <CreateActionModal

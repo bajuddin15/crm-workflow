@@ -3,6 +3,9 @@ import Layout from "../Layout";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Loading from "../../../components/Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { setReEnrollment } from "../../../store/slices/workflowSlice";
+import { RootState } from "../../../store/reducers";
 
 interface IState {
   // workflow: any;
@@ -11,36 +14,39 @@ interface IState {
 }
 
 const Settings = () => {
+  const dispatch = useDispatch();
   const params = useParams();
   const { id: workflowId } = params;
 
   // const [workflow, setWorkflow] = React.useState<IState["workflow"]>(null);
 
-  const [reEnrollment, setReEnrollment] =
-    React.useState<IState["reEnrollment"]>(false);
+  const reEnrollment = useSelector(
+    (state: RootState) => state.workflowStore.reEnrollment
+  );
   const [loading, setLoading] = React.useState<IState["loading"]>(false);
 
   const handleReEnrollmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateWorkflowReEnrollment(e.target.checked);
-    setReEnrollment(e.target.checked);
+    // updateWorkflowReEnrollment(e.target.checked);
+    dispatch(setReEnrollment(e.target.checked));
+    // setReEnrollment(e.target.checked);
   };
 
-  const updateWorkflowReEnrollment = async (reEnrollment: boolean) => {
-    try {
-      await axios.put(`/api/workflow/${workflowId}`, {
-        reEnrollment,
-      });
-    } catch (error: any) {
-      console.log("Re-enrollment changed error : ", error?.message);
-    }
-  };
+  // const updateWorkflowReEnrollment = async (reEnrollment: boolean) => {
+  //   try {
+  //     await axios.put(`/api/workflow/${workflowId}`, {
+  //       reEnrollment,
+  //     });
+  //   } catch (error: any) {
+  //     console.log("Re-enrollment changed error : ", error?.message);
+  //   }
+  // };
 
   React.useEffect(() => {
     const fetchSingleWorkflow = async () => {
       setLoading(true);
       const { data } = await axios.get(`/api/workflow/${workflowId}`);
       if (data && data?.success) {
-        setReEnrollment(data.data.reEnrollment);
+        dispatch(setReEnrollment(data.data.reEnrollment));
       }
       setLoading(false);
     };

@@ -6,6 +6,7 @@ interface workflowState {
   actions: Array<any>;
   currentWorkflow: any;
   actionItemTags: Array<any>;
+  reEnrollment: boolean;
 }
 
 const tags = [
@@ -68,6 +69,7 @@ const initialState: workflowState = {
   actions: [],
   currentWorkflow: null,
   actionItemTags: tags,
+  reEnrollment: true,
 };
 
 const workflowSlice = createSlice({
@@ -89,6 +91,9 @@ const workflowSlice = createSlice({
     setActionItemTags: (state, action) => {
       state.actionItemTags = action.payload;
     },
+    setReEnrollment: (state, action: PayloadAction<boolean>) => {
+      state.reEnrollment = action.payload;
+    },
   },
 });
 
@@ -98,6 +103,7 @@ export const {
   addActions,
   setCurrentWorkflow,
   setActionItemTags,
+  setReEnrollment,
 } = workflowSlice.actions;
 
 export default workflowSlice.reducer;

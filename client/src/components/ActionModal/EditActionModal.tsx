@@ -20,6 +20,8 @@ import KeyValueInput from "../KeyValueInput";
 import useData from "./data";
 import KeyValueComp from "../KeyValueComp";
 import { RootState } from "../../store/reducers";
+import { getOrganiseKeyName } from "../../utils";
+import FilterActionComp from "./Components/FilterActionComp";
 
 interface IProps {
   item: any;
@@ -38,14 +40,14 @@ interface FormData {
 function Row({
   index,
   formData,
-  onChangeKey,
+  // onChangeKey,
   onChangeValue,
   onDelete,
   setShowTagsOfIndex,
 }: {
   index: number;
   formData: FormData;
-  onChangeKey: (index: number, key: string) => void;
+  // onChangeKey: (index: number, key: string) => void;
   onChangeValue: (index: number, value: string) => void;
   onDelete: (index: number) => void;
   setShowTagsOfIndex: (showTags: number) => void;
@@ -53,28 +55,40 @@ function Row({
   return (
     <>
       <div className="flex items-center gap-4">
-        <input
-          className="w-1/3 border border-gray-300 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md bg-white"
+        {/* <input
+          className="w-1/3 border border-gray-400 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md bg-white"
           type="text"
           value={formData.key}
           onChange={(e) => onChangeKey(index, e.target.value)}
           placeholder="Key"
-        />
-        <div className="w-1/2 flex items-center border border-gray-300 p-2 focus:ring-1 focus:ring-blue-500 rounded-md">
-          <input
-            className="border-none outline-none bg-white"
-            type="text"
-            value={formData.value}
-            onChange={(e) => onChangeValue(index, e.target.value)}
-            placeholder="Value"
-          />
+        /> */}
+        <span className="w-1/3 border border-gray-400 text-gray-600 p-2 outline-none focus:ring-1 focus:ring-blue-500 rounded-md bg-white">
+          {getOrganiseKeyName(formData.key)}
+        </span>
+        <div className="w-1/2 flex items-center border border-gray-400 p-2 focus:ring-1 focus:ring-blue-500 rounded-md">
+          {formData.key === "message" ? (
+            <textarea
+              className="border-none text-gray-600 outline-none bg-white"
+              value={formData.value}
+              onChange={(e) => onChangeValue(index, e.target.value)}
+              placeholder="Value"
+            ></textarea>
+          ) : (
+            <input
+              className="border-none outline-none bg-white"
+              type="text"
+              value={formData.value}
+              onChange={(e) => onChangeValue(index, e.target.value)}
+              placeholder="Value"
+            />
+          )}
           <button onClick={() => setShowTagsOfIndex(index)}>
             <Tag size={18} color="gray" />
           </button>
         </div>
         <button
           onClick={() => onDelete(index)}
-          className="cursor-pointer border border-gray-300 rounded-md p-2 bg-gray-100 hover:bg-gray-200"
+          className="cursor-pointer border border-gray-400 rounded-md p-2 bg-gray-100 hover:bg-gray-200"
         >
           <Trash2 size={22} color="gray" />
         </button>
@@ -287,7 +301,6 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
             formHistData
           );
           if (res?.data && res?.data?.success) {
-            console.log("history created", res?.data);
           }
         }
       }
@@ -400,7 +413,7 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     <>
       <div
         onClick={handleToggleDrawer}
-        className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-300 rounded-md"
+        className="cursor-pointer w-6 h-6 flex items-center justify-center border border-gray-400 rounded-md"
       >
         <Pencil size={12} color="gray" />
       </div>
@@ -410,7 +423,7 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
         onClose={handleToggleDrawer}
         direction="right"
         className="py-4 px-7 overflow-y-auto"
-        size={500}
+        size={item.unqName === "filter" ? 800 : 500}
       >
         <div>
           <div className="flex items-center justify-end">
@@ -435,7 +448,7 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
             </label>
             <input
               id="actionName"
-              className="w-full bg-inherit px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
+              className="w-full bg-inherit px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-400 focus:ring-1 focus:ring-blue-500"
               type="text"
               value={values.name}
               onChange={(e) => setValues({ ...values, name: e.target.value })}
@@ -459,7 +472,7 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                 </label>
                 <input
                   id="apiEndPointUrl"
-                  className="w-full bg-inherit px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-300 focus:ring-1 focus:ring-blue-500"
+                  className="w-full bg-inherit px-4 py-2 outline-none text-sm  placeholder:text-sm placeholder:font-normal placeholder:text-gray-400 rounded-md border border-gray-400 focus:ring-1 focus:ring-blue-500"
                   type="text"
                   placeholder="Enter text or map data."
                   required
@@ -524,7 +537,18 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
           )}
           {/* ----------------- if action is restApi end -------------  */}
 
-          {!(item?.unqName === "restApi") && (
+          {/* ----------------- if action is filter - start -------------  */}
+          {item?.unqName === "filter" && (
+            <FilterActionComp
+              type="edit"
+              values={values}
+              handleToggleDrawer={handleToggleDrawer}
+              item={item}
+            />
+          )}
+          {/* ----------------- if action is filter - end -------------  */}
+
+          {!(item?.unqName === "restApi" || item?.unqName === "filter") && (
             <div className=" flex flex-col my-5">
               {/* add item */}
               <span className="text-sm font-medium uppercase mb-1">
@@ -537,14 +561,14 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                       key={index}
                       index={index}
                       formData={data}
-                      onChangeKey={handleChangeKey}
+                      // onChangeKey={handleChangeKey}
                       onChangeValue={handleChangeValue}
                       onDelete={deleteRow}
                       setShowTagsOfIndex={setShowTagsOfIndex}
                     />
 
                     {showTagsOfIndex === index && (
-                      <div className="absolute -top-24 right-0 text-sm border border-gray-300  w-48 h-52 overflow-auto z-50 bg-white shadow-sm">
+                      <div className="absolute -top-24 right-0 text-sm border border-gray-400  w-48 h-52 overflow-auto z-50 bg-white shadow-sm">
                         <div className="flex items-center justify-between bg-gray-200 p-2 cursor-pointer rounded-sm">
                           <span className="text-blue-500">Custom Values</span>
                           <button onClick={() => setShowTagsOfIndex(-1)}>
@@ -552,7 +576,7 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
                           </button>
                         </div>
 
-                        {actionItemTags.map((item: any, idx) => {
+                        {actionItemTags.map((item: any, idx: number) => {
                           const key = Object.keys(item)[0]; // Extract the key
                           const value = item[key];
                           return (
@@ -603,44 +627,48 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
               </div>
             </div>
           )}
-          <div className="text-sm flex items-center justify-between mt-10">
-            <button
-              onClick={handleToggleDrawer}
-              className="border border-gray-300 px-4 py-2 rounded-md"
-            >
-              Cancel
-            </button>
-            <div className="flex items-center gap-2">
-              {item?.unqName === "restApi" && (
+
+          {/* footer action buttons */}
+          {item?.unqName !== "filter" && (
+            <div className="text-sm flex items-center justify-between mt-10">
+              <button
+                onClick={handleToggleDrawer}
+                className="border border-blue-500 text-blue-500 px-4 py-2 rounded-md"
+              >
+                Cancel
+              </button>
+              <div className="flex items-center gap-2">
+                {item?.unqName === "restApi" && (
+                  <button
+                    className="bg-blue-500 text-white border border-gray-400 hover:bg-blue-600 px-4 py-2 rounded-md"
+                    onClick={() => handleRestApiActionUpdate(true)}
+                  >
+                    {testApiLoading ? (
+                      <Loading bgColor="#fff" size="21" />
+                    ) : (
+                      <span>Test Request</span>
+                    )}
+                  </button>
+                )}
                 <button
-                  className="bg-blue-500 text-white border border-gray-400 hover:bg-blue-600 px-4 py-2 rounded-md"
-                  onClick={() => handleRestApiActionUpdate(true)}
+                  className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 rounded-md"
+                  onClick={() => {
+                    if (item?.unqName === "restApi") {
+                      handleRestApiActionUpdate();
+                    } else {
+                      handleSubmit();
+                    }
+                  }}
                 >
-                  {testApiLoading ? (
+                  {loading ? (
                     <Loading bgColor="#fff" size="21" />
                   ) : (
-                    <span>Test Request</span>
+                    <span>Update</span>
                   )}
                 </button>
-              )}
-              <button
-                className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 rounded-md"
-                onClick={() => {
-                  if (item?.unqName === "restApi") {
-                    handleRestApiActionUpdate();
-                  } else {
-                    handleSubmit();
-                  }
-                }}
-              >
-                {loading ? (
-                  <Loading bgColor="#fff" size="21" />
-                ) : (
-                  <span>Update</span>
-                )}
-              </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </Drawer>
     </>

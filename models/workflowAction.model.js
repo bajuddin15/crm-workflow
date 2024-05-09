@@ -85,6 +85,26 @@ const workflowActionSchema = new mongoose.Schema(
     voiceText: {
       type: String,
     },
+    // filter
+    filterValues: {
+      andValues: [
+        {
+          label: String,
+          filterType: String,
+          value: String,
+        },
+      ],
+      orValues: [
+        {
+          label: String,
+          filterType: String,
+          value: String,
+        },
+      ],
+    },
+    filterExpression: {
+      type: String,
+    },
   },
   { timestamps: true }
 );

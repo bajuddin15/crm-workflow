@@ -20,12 +20,16 @@ export const workflowActions = [
     unqName: "sendWhatsAppNonTemplates",
   },
   {
+    name: "Outgoing Voice Call",
+    unqName: "outgoingVoiceCall",
+  },
+  {
     name: "REST API",
     unqName: "restApi",
   },
   {
-    name: "Outgoing Voice Call",
-    unqName: "outgoingVoiceCall",
+    name: "Filter",
+    unqName: "filter",
   },
 ];
 

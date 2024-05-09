@@ -131,6 +131,8 @@ const editWorkflowAction = async (req, res) => {
     authType,
     headers,
     parameters,
+    filterValues,
+    filterExpression,
   } = req.body;
   const { id: actionId } = req.params;
 
@@ -163,6 +165,8 @@ const editWorkflowAction = async (req, res) => {
     action.headers = headers || action.headers;
     action.parameters = parameters || action.parameters;
     action.voiceText = req.body.voiceText || action.voiceText;
+    action.filterValues = filterValues || action.filterValues;
+    action.filterExpression = filterExpression || action.filterExpression;
 
     const updatedAction = await action.save();
     res.status(200).json({

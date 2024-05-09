@@ -39,6 +39,11 @@ const useData = () => {
     (state: RootState) => state?.workflowStore?.actions
   );
 
+  // reEnrollment
+  const reEnrollment = useSelector(
+    (state: RootState) => state.workflowStore.reEnrollment
+  );
+
   const [workflow, setWorkflow] = useState<IState["workflow"]>(null);
   const [workflowName, setWorkflowName] = useState<IState["workflowName"]>("");
   const [workflowStatus, setWorkflowStatus] =
@@ -104,6 +109,7 @@ const useData = () => {
     const formData = {
       name: workflowName,
       status: workflowStatus,
+      reEnrollment,
     };
     try {
       const { data } = await axios.put(`/api/workflow/${workflowId}`, formData);
@@ -113,7 +119,7 @@ const useData = () => {
         toast.error(data?.message);
       }
     } catch (error: any) {
-      console.log("workflow update error : ", error?.message);
+      console.log("Error in workflow update : ", error?.message);
       toast.error("Something went wrong");
     }
     setUpdateLoading(false);

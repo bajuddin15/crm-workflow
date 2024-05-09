@@ -28,7 +28,7 @@ const incomingMessage = async (req, res) => {
   let token;
   try {
     const { data } = await axios.get(getTokenUri);
-    console.log("token", data);
+    console.log(data);
     token = data?.token;
     if (!token) {
       return res
@@ -362,6 +362,33 @@ const incomingMessage = async (req, res) => {
                     { new: true }
                   );
                 }
+              }
+            } else if (action.unqName === "filter") {
+              // handle filter action
+              let filter_expression = action.filterExpression;
+              if (eval(filter_expression)) {
+                // if expression give true
+                console.log("expression matched.");
+                if (workflowHistoryId) {
+                  await WorkflowHistory.findByIdAndUpdate(
+                    workflowHistoryId,
+                    { status: "finshed" },
+                    { new: true }
+                  );
+                }
+              } else {
+                // if expression give false then skipped
+                if (workflowHistoryId) {
+                  await WorkflowHistory.findByIdAndUpdate(
+                    workflowHistoryId,
+                    { status: "skipped" },
+                    { new: true }
+                  );
+                }
+                console.log(
+                  "filtered actions success, expression not matched."
+                );
+                break;
               }
             }
           }
