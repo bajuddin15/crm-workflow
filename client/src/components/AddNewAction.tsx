@@ -7,9 +7,14 @@ import CreateActionModal from "./ActionModal/CreateActionModal";
 interface IProps {
   workflowActions: Array<any>;
   workflowId: any;
+  addActionIndex: number;
 }
 
-const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
+const AddNewAction: React.FC<IProps> = ({
+  workflowActions,
+  workflowId,
+  addActionIndex,
+}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const toggleDrawer = () => {
     setIsOpen((prevState) => !prevState);
@@ -54,6 +59,7 @@ const AddNewAction: React.FC<IProps> = ({ workflowActions, workflowId }) => {
                 key={index}
                 item={item}
                 workflowId={workflowId}
+                addActionIndex={addActionIndex}
               />
             );
           })}

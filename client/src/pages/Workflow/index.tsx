@@ -62,11 +62,18 @@ const Workflow = () => {
                 <AddNewAction
                   workflowActions={workflowActions}
                   workflowId={workflowId}
+                  addActionIndex={0}
                 />
               )}
               {actions?.map((item, index) => {
                 return (
                   <>
+                    <AddNewAction
+                      workflowActions={workflowActions}
+                      workflowId={workflowId}
+                      addActionIndex={index}
+                    />
+                    <div className="w-[1px] h-10 bg-gray-300"></div>
                     <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-64 h-20 rounded-md">
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-blue-500">
@@ -93,10 +100,13 @@ const Workflow = () => {
                     </div>
                     <div className="w-[1px] h-10 bg-gray-300"></div>
                     {index === actions.length - 1 && (
-                      <AddNewAction
-                        workflowActions={workflowActions}
-                        workflowId={workflowId}
-                      />
+                      <>
+                        <AddNewAction
+                          workflowActions={workflowActions}
+                          workflowId={workflowId}
+                          addActionIndex={index + 1}
+                        />
+                      </>
                     )}
                   </>
                 );

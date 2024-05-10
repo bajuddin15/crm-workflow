@@ -25,6 +25,7 @@ const createWorkflowAction = async (req, res) => {
     authType,
     headers,
     parameters,
+    index,
   } = req.body;
 
   try {
@@ -62,7 +63,8 @@ const createWorkflowAction = async (req, res) => {
         .json({ success: false, message: "Workflow not found" });
     }
 
-    workflow.actions.push(newAction._id);
+    workflow.actions.splice(index, 0, newAction._id);
+    // workflow.actions.push(newAction._id);
     await newAction.save();
     await workflow.save();
 
@@ -183,11 +185,13 @@ const editWorkflowAction = async (req, res) => {
 const getAllWorkflowActions = async (req, res) => {
   const { id: workflowId } = req.params;
   try {
-    const actions = await WorkflowAction.find({ workflowId });
+    const workflow = await Workflow.findById(workflowId).populate("actions");
+    const workflowActions = workflow.actions;
+    // const actions = await WorkflowAction.find({ workflowId });
     res.status(200).json({
       success: true,
       message: "Workflow actions found",
-      data: actions,
+      data: workflowActions,
     });
   } catch (error) {
     console.log("Get all workflow actions controller error : ", error.message);

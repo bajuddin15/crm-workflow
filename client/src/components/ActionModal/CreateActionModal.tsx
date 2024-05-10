@@ -26,6 +26,7 @@ import FilterActionComp from "./Components/FilterActionComp";
 interface IProps {
   item: any;
   workflowId: string;
+  addActionIndex: number;
 }
 
 interface IState {
@@ -97,7 +98,11 @@ function Row({
   );
 }
 
-const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
+const CreateActionModal: React.FC<IProps> = ({
+  item,
+  workflowId,
+  addActionIndex,
+}) => {
   const dispatch = useDispatch();
   const { executeApiAndGetResp } = useData();
 
@@ -171,7 +176,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     });
 
     // If user have added delay event
-    const formDataAction = { ...values, ...fromValues };
+    const formDataAction = { ...values, ...fromValues, index: addActionIndex };
 
     setLoading(true);
     try {
@@ -265,6 +270,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
       authType: selectedAuthType?.value,
       headers: apiActionHeaders,
       parameters: apiActionParameters,
+      index: addActionIndex,
     };
     if (!formData.endpointUrl) {
       toast.error("Enter api endpoint url");
@@ -500,6 +506,7 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
               type="create"
               values={values}
               handleToggleDrawer={handleToggleDrawer}
+              addActionIndex={addActionIndex}
             />
           )}
           {/* ----------------- if action is filter - end -------------  */}

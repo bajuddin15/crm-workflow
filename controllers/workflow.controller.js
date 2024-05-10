@@ -114,7 +114,9 @@ const getSingleWorkflow = async (req, res) => {
   const { id: workflowId } = req.params;
 
   try {
-    const workflow = await Workflow.findById(workflowId);
+    const workflow = await Workflow.findById(workflowId)
+      .populate("actions")
+      .populate("triggers");
     if (!workflow) {
       return res
         .status(404)

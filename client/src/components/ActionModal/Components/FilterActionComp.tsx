@@ -25,6 +25,7 @@ interface IProps {
   values: any;
   handleToggleDrawer: any;
   item?: any;
+  addActionIndex?: number;
 }
 
 const FilterActionComp: React.FC<IProps> = ({
@@ -32,6 +33,7 @@ const FilterActionComp: React.FC<IProps> = ({
   values,
   handleToggleDrawer,
   item,
+  addActionIndex,
 }) => {
   const dispatch = useDispatch();
 
@@ -50,12 +52,8 @@ const FilterActionComp: React.FC<IProps> = ({
     },
   ]);
 
-  const [showAndValues, setShowAndValues] = useState<boolean>(
-    type === "edit" ? true : false
-  );
-  const [showOrValues, setShowOrValues] = useState<boolean>(
-    type === "edit" ? true : false
-  );
+  const [showAndValues, setShowAndValues] = useState<boolean>(false);
+  const [showOrValues, setShowOrValues] = useState<boolean>(false);
 
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -177,6 +175,7 @@ const FilterActionComp: React.FC<IProps> = ({
         orValues: orValuesData,
       },
       filterExpression: expression,
+      index: addActionIndex,
     };
 
     setLoading(true);
@@ -220,6 +219,12 @@ const FilterActionComp: React.FC<IProps> = ({
       const orValuesData = item?.filterValues?.orValues;
       setAndValues(andValuesData);
       setOrValues(orValuesData);
+      if (andValuesData.length > 0) {
+        setShowAndValues(true);
+      }
+      if (orValuesData.length > 0) {
+        setShowOrValues(true);
+      }
     }
   }, [item]);
 
