@@ -297,9 +297,11 @@ const FilterActionComp: React.FC<IProps> = ({
         </div>
       )}
 
-      <div className="flex items-center justify-center my-4">
-        <span className="text-base">AND</span>
-      </div>
+      {showAndValues && showOrValues && (
+        <div className="flex items-center justify-center my-4">
+          <span className="text-base">AND</span>
+        </div>
+      )}
 
       {/* Or conditions */}
       {showOrValues && (

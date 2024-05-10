@@ -376,7 +376,6 @@ const CreateActionModal: React.FC<IProps> = ({ item, workflowId }) => {
         open={isOpenModal}
         onClose={handleToggleDrawer}
         direction="right"
-        style={{ scrollbarWidth: "none" }}
         className="py-4 px-7 h-screen overflow-y-auto"
         size={item.unqName === "filter" ? 800 : 500}
       >
