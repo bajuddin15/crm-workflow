@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // import component 👇
 import Drawer from "react-modern-drawer";
 import Loading from "../Loading";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import { addTriggers } from "../../store/slices/workflowSlice";
 import { useDispatch } from "react-redux";
 import useData from "./data";
+import KeyValueComp from "../KeyValueComp";
 
 interface IProps {
   item: any;
@@ -18,6 +19,7 @@ interface IProps {
 interface IState {
   values: any;
   loading: boolean;
+  trigger: any;
 }
 
 const EditTriggerModal: React.FC<IProps> = ({
@@ -30,6 +32,7 @@ const EditTriggerModal: React.FC<IProps> = ({
   const [isOpenModal, setIsOpenModal] = React.useState(false);
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
+  const [trigger, setTrigger] = useState<IState["trigger"]>(null);
 
   const [values, setValues] = useState<IState["values"]>({
     workflowId: workflowId,
@@ -80,10 +83,57 @@ const EditTriggerModal: React.FC<IProps> = ({
     setLoading(false);
   };
 
+  const handleCaptureResponse = async () => {
+    try {
+      const formData = { responseListening: true };
+      const { data } = await axios.put(
+        `/api/workflowTrigger/${currentTrigger?._id}`,
+        formData
+      );
+      if (data && data?.success) {
+        toast.success("Listening for response");
+        setTrigger(data?.data);
+      } else {
+        toast.error(data?.message);
+      }
+    } catch (error: any) {
+      if (error?.response) {
+        toast.error(error?.response?.data?.message);
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
+
+  const getSingleTrigger = async () => {
+    try {
+      const { data } = await axios.get(
+        `/api/workflowTrigger/${currentTrigger?._id}`
+      );
+      if (data && data?.success) {
+        setTrigger(data?.data);
+      }
+    } catch (error: any) {
+      console.log("Error in getSingleTrigger : ", error?.message);
+    }
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      getSingleTrigger();
+    }, 5000); // Interval set to 5000 milliseconds (5 seconds)
+
+    // Clean up the interval when the component unmounts or on dependency change
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <>
       <div
-        onClick={handleToggleDrawer}
+        onClick={() => {
+          handleToggleDrawer();
+          getSingleTrigger();
+        }}
         className={`py-2 px-4 border border-gray-300 cursor-pointer rounded-md ${
           currentTrigger?.unqName === item?.unqName ? "bg-blue-500" : ""
         }`}
@@ -103,10 +153,10 @@ const EditTriggerModal: React.FC<IProps> = ({
         open={isOpenModal}
         onClose={handleToggleDrawer}
         direction="right"
-        className="py-4 px-7"
+        className="py-4 px-7 h-screen overflow-y-auto"
         size={500}
       >
-        <div>
+        <div className="">
           <div className="flex items-center justify-end">
             <div
               onClick={handleToggleDrawer}
@@ -126,7 +176,7 @@ const EditTriggerModal: React.FC<IProps> = ({
 
           {/* main content */}
           <div className="my-5">
-            <div className="flex h-[335px] flex-col gap-1 mb-10">
+            <div className="flex flex-col gap-1 mb-10">
               <label
                 htmlFor="actionName"
                 className="text-sm text-gray-700 font-medium uppercase"
@@ -170,7 +220,39 @@ const EditTriggerModal: React.FC<IProps> = ({
                       the webhook response here. Note that webhook URL is unique
                       for every workflow.
                     </span>
+
+                    {/* capture button resp */}
+                    <div className="mt-5">
+                      <button
+                        onClick={handleCaptureResponse}
+                        disabled={trigger?.responseListening}
+                        className={`text-sm flex items-center gap-1  border border-blue-500  h-10 px-4 rounded-md  bg-blue-500 text-white`}
+                      >
+                        {trigger?.responseListening && (
+                          <Loading bgColor="white" size="26" />
+                        )}
+                        {trigger?.responseListening ? (
+                          <span>Waiting For Webhook Response</span>
+                        ) : (
+                          <span>
+                            {trigger?.webhookResponse?.length > 0
+                              ? "Re-Capture Webhook Response"
+                              : "Capture Webhook Response"}{" "}
+                          </span>
+                        )}
+                      </button>
+                    </div>
                   </div>
+
+                  {/* webhook response */}
+                  {trigger?.webhookResponse?.length > 0 && (
+                    <div className="space-y-4 mt-5">
+                      <h2 className="text-base font-medium">
+                        Response Received
+                      </h2>
+                      <KeyValueComp data={trigger?.webhookResponse} />
+                    </div>
+                  )}
                 </div>
               )}
             </div>

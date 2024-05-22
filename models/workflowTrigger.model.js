@@ -21,6 +21,12 @@ const workflowTriggerSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    webhookResponse: [
+      {
+        key: String,
+        value: String,
+      },
+    ],
   },
   { timestamps: true }
 );

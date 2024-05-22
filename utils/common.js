@@ -25,3 +25,31 @@ export const findValueByKey = (apiResponse, format) => {
   }
   return value;
 };
+
+export function parseJsonToKeyValue(data) {
+  if (typeof data !== "object" || data === null) {
+    return []; // Return an empty array if data is not an object
+  }
+
+  const parsedData = [];
+
+  for (const key in data) {
+    const value = data[key];
+    if (typeof value === "string" || typeof value === "number") {
+      parsedData.push({ key, value });
+    }
+  }
+
+  return parsedData;
+}
+
+export function replacePlaceholders(template, data) {
+  return template.replace(/{{\s*(\w+\.\w+)\s*}}/g, (match, p1) => {
+    const keys = p1.split(".");
+    let value = data;
+    keys.forEach((key) => {
+      value = value[key];
+    });
+    return value !== undefined ? value : match;
+  });
+}

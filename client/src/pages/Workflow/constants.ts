@@ -46,10 +46,10 @@ export const workflowTriggers = [
     name: "Incoming WhatsApp",
     unqName: "incomingWhatsApp",
   },
-  // {
-  //   name: "Webhook",
-  //   unqName: "webhook",
-  // },
+  {
+    name: "Webhook",
+    unqName: "webhook",
+  },
   {
     name: "Incoming Voice Call",
     unqName: "incomingVoiceCall",

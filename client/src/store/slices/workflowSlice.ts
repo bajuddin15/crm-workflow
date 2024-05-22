@@ -7,7 +7,100 @@ interface workflowState {
   currentWorkflow: any;
   actionItemTags: Array<any>;
   reEnrollment: boolean;
+  filterLabels: any;
 }
+
+// const itemTags = [
+//   {
+//     Contact: [
+//       {
+//         "Contact Name": "{{contact.name}}",
+//       },
+//       {
+//         "Contact Email": "{{contact.email}}",
+//       },
+//       {
+//         "Contact Phone": "{{contact.phoneNumber}}",
+//       },
+//       {
+//         "Group Name": "{{contact.groupName}}",
+//       },
+//     ],
+//     "Voice Call": [
+//       {
+//         "To Number": "{{toNumber}}",
+//       },
+//       {
+//         "From Number": "{{fromNumber}}",
+//       },
+//       {
+//         voiceText: "{{voiceText}}",
+//       },
+//     ],
+//     SMS: [
+//       {
+//         "To Number": "{{toNumber}}",
+//       },
+//       {
+//         "From Number": "{{fromNumber}}",
+//       },
+//       {
+//         Message: "{{message}}",
+//       },
+//       {
+//         "Media Url": "{{mediaUrl}}",
+//       },
+//     ],
+//     "WhatsApp Templates": [
+//       {
+//         "To Number": "{{toNumber}}",
+//       },
+//       {
+//         "From Number": "{{fromNumber}}",
+//       },
+//       {
+//         Message: "{{message}}",
+//       },
+//       {
+//         "Media Url": "{{mediaUrl}}",
+//       },
+//       {
+//         "Template Name": "{{templateName}}",
+//       },
+//       {
+//         "Template Language": "{{templateLang}}",
+//       },
+//     ],
+//     "WhatsApp Non-Templates": [
+//       {
+//         "To Number": "{{toNumber}}",
+//       },
+//       {
+//         "From Number": "{{fromNumber}}",
+//       },
+//       {
+//         Message: "{{message}}",
+//       },
+//       {
+//         "Media Url": "{{mediaUrl}}",
+//       },
+//     ],
+//     Delay: [
+//       {
+//         seconds: "seconds",
+//       },
+//       {
+//         minutes: "minutes",
+//       },
+//       {
+//         hours: "hours",
+//       },
+//       {
+//         days: "days",
+//       },
+//     ],
+//   },
+// ];
 
 const tags = [
   {
@@ -63,6 +156,25 @@ const tags = [
   },
 ];
 
+const labels = [
+  {
+    value: "toNumber",
+    label: "To Number",
+  },
+  {
+    value: "fromNumber",
+    label: "From Number",
+  },
+  {
+    value: "message",
+    label: "Message",
+  },
+  {
+    value: "mediaUrl",
+    label: "Media Url",
+  },
+];
+
 const initialState: workflowState = {
   workflows: [],
   triggers: [],
@@ -70,6 +182,7 @@ const initialState: workflowState = {
   currentWorkflow: null,
   actionItemTags: tags,
   reEnrollment: true,
+  filterLabels: labels,
 };
 
 const workflowSlice = createSlice({
@@ -94,6 +207,9 @@ const workflowSlice = createSlice({
     setReEnrollment: (state, action: PayloadAction<boolean>) => {
       state.reEnrollment = action.payload;
     },
+    setFilterLabels: (state, action: PayloadAction<any>) => {
+      state.filterLabels = [...labels, action.payload];
+    },
   },
 });
 
@@ -104,6 +220,7 @@ export const {
   setCurrentWorkflow,
   setActionItemTags,
   setReEnrollment,
+  setFilterLabels,
 } = workflowSlice.actions;
 
 export default workflowSlice.reducer;

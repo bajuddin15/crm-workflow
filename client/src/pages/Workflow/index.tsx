@@ -57,7 +57,7 @@ const Workflow = () => {
                   workflowId={workflowId}
                 />
               )}
-              <div className="w-[1px] h-10 bg-gray-300"></div>
+              <div className="w-[1px] h-6 bg-gray-300"></div>
               {actions.length === 0 && (
                 <AddNewAction
                   workflowActions={workflowActions}
@@ -73,7 +73,7 @@ const Workflow = () => {
                       workflowId={workflowId}
                       addActionIndex={index}
                     />
-                    <div className="w-[1px] h-10 bg-gray-300"></div>
+                    <div className="w-[1px] h-6 bg-gray-300"></div>
                     <div className="p-3 bg-white shadow-sm cursor-pointer border border-solid border-gray-300 flex items-center justify-between gap-4 w-64 h-20 rounded-md">
                       <div className="flex flex-col">
                         <span className="text-sm font-medium text-blue-500">
@@ -98,7 +98,7 @@ const Workflow = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="w-[1px] h-10 bg-gray-300"></div>
+                    <div className="w-[1px] h-6 bg-gray-300"></div>
                     {index === actions.length - 1 && (
                       <>
                         <AddNewAction
@@ -112,7 +112,7 @@ const Workflow = () => {
                 );
               })}
 
-              <div className="w-[1px] h-10 bg-gray-300"></div>
+              <div className="w-[1px] h-6 bg-gray-300"></div>
               <div className="bg-gray-200 text-gray-500 cursor-pointer text-sm px-4 py-1 rounded-full border border-gray-300">
                 <span>END</span>
               </div>

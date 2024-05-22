@@ -2,7 +2,7 @@ import axios from "axios";
 import FormData from "form-data";
 import Workflow from "../models/workflow.model.js";
 import WorkflowHistory from "../models/workflowHistory.model.js";
-import { calculateTimeInMillis } from "../utils/common.js";
+import { calculateTimeInMillis, replacePlaceholders } from "../utils/common.js";
 import { getProviderDetails, getTokenFromNumber } from "../utils/api.js";
 
 const incomingMessage = async (req, res) => {
@@ -62,6 +62,12 @@ const incomingMessage = async (req, res) => {
         let actions = myworkflow.actions;
         const apiResponse = myworkflow.apiResponse;
         const reEnrollment = myworkflow.reEnrollment;
+        const webhookRespData = myworkflow.webhookResponse;
+        const webhookResp = webhookRespData.reduce((obj, item) => {
+          obj[item.key] = item.value;
+          return obj;
+        }, {});
+        console.log({ webhookResp });
 
         if (triggers?.length === 0) {
           return res
@@ -96,30 +102,66 @@ const incomingMessage = async (req, res) => {
               fromNumber:
                 (action?.toNumber === "{{fromNumber}}"
                   ? toNumber
+                  : action?.toNumber?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.toNumber, {
+                      webhook: webhookResp,
+                    })
                   : action?.fromNumber) || toNumber,
               toNumber:
                 (action?.fromNumber === "{{toNumber}}"
                   ? fromNumber
+                  : action?.fromNumber?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.fromNumber, {
+                      webhook: webhookResp,
+                    })
                   : action?.toNumber) || fromNumber,
               message:
-                action?.message === "{{message}}" ? message : action?.message,
+                action?.message === "{{message}}"
+                  ? message
+                  : action?.message?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.message, {
+                      webhook: webhookResp,
+                    })
+                  : action?.message,
               mediaUrl:
                 (action?.mediaUrl === "{{mediaUrl}}"
                   ? mediaUrl
+                  : action?.mediaUrl?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.mediaUrl, {
+                      webhook: webhookResp,
+                    })
                   : action?.mediaUrl) || "",
               email:
-                action?.email === "{{contact.email}}" ? email : action?.email,
+                action?.email === "{{contact.email}}"
+                  ? email
+                  : action?.email?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.email, {
+                      webhook: webhookResp,
+                    })
+                  : action?.email,
               phoneNumber:
                 action?.phoneNumber === "{{contact.phoneNumber}}"
                   ? phoneNumber || fromNumber
+                  : action?.phoneNumber?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.phoneNumber, {
+                      webhook: webhookResp,
+                    })
                   : action?.phoneNumber,
               contactName:
                 action?.contactName === "{{contact.name}}"
                   ? contactName
+                  : action?.contactName?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.contactName, {
+                      webhook: webhookResp,
+                    })
                   : action?.contactName,
               groupName:
                 action?.groupName === "{{contact.groupName}}"
                   ? groupName
+                  : action?.groupName?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.groupName, {
+                      webhook: webhookResp,
+                    })
                   : action?.groupName,
               templateName:
                 action?.templateName === "{{templateName}}"
@@ -133,6 +175,10 @@ const incomingMessage = async (req, res) => {
               voiceText:
                 action?.voiceText === "{{voiceText}}"
                   ? req.body?.voiceText
+                  : action?.voiceText?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.voiceText, {
+                      webhook: webhookResp,
+                    })
                   : action?.voiceText,
             };
 
@@ -365,7 +411,9 @@ const incomingMessage = async (req, res) => {
               }
             } else if (action.unqName === "filter") {
               // handle filter action
+              const webhook = webhookResp;
               let filter_expression = action.filterExpression;
+              console.log({ webhook, filter_expression });
               if (eval(filter_expression)) {
                 // if expression give true
                 console.log("expression matched.");
@@ -390,6 +438,12 @@ const incomingMessage = async (req, res) => {
                 );
                 break;
               }
+            } else if (action.unqName === "restApi") {
+              await WorkflowHistory.findByIdAndUpdate(
+                workflowHistoryId,
+                { status: "finshed" },
+                { new: true }
+              );
             }
           }
         }

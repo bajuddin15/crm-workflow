@@ -24,10 +24,7 @@ const Layout: React.FC<IProps> = ({ children }) => {
     workflowStatus,
     updateLoading,
     deleteWorkflowLoading,
-    actions,
   } = state;
-
-  const disablePublishBtn = actions.length > 0 ? false : true;
 
   const location = useLocation();
   const pathname = location?.pathname;
@@ -118,7 +115,6 @@ const Layout: React.FC<IProps> = ({ children }) => {
             <span className="text-base text-gray-600">Draft</span>
             <input
               type="checkbox"
-              disabled={disablePublishBtn}
               className={`toggle toggle-sm ${
                 workflowStatus === "draft"
                   ? "[--tglbg:white]"

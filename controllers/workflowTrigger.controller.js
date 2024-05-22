@@ -40,7 +40,6 @@ const createWorkflowTrigger = async (req, res) => {
 const deleteWorkflowTrigger = async (req, res) => {
   const { id: triggerId } = req.params;
   const { workflowId } = req.body;
-  console.log({ "req.body": req.body, workflowId });
 
   try {
     const findTrigger = await WorkflowTrigger.findById(triggerId);
@@ -72,7 +71,7 @@ const deleteWorkflowTrigger = async (req, res) => {
   }
 };
 const editWorkflowTrigger = async (req, res) => {
-  const { name, unqName } = req.body;
+  const { name, unqName, responseListening } = req.body;
   const { id: triggerId } = req.params;
 
   try {
@@ -86,6 +85,7 @@ const editWorkflowTrigger = async (req, res) => {
 
     trigger.name = name || trigger.name;
     trigger.unqName = unqName || trigger.unqName;
+    trigger.responseListening = responseListening || trigger.responseListening;
 
     const updatedTrigger = await trigger.save();
     res.status(200).json({
@@ -112,9 +112,30 @@ const getAllTriggers = async (req, res) => {
   }
 };
 
+const getSingleTrigger = async (req, res) => {
+  const { id: triggerId } = req.params;
+  try {
+    const trigger = await WorkflowTrigger.findById(triggerId);
+
+    if (!trigger) {
+      return res.status(404).json({
+        success: false,
+        message: "Trigger not found.",
+      });
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Trigger found", data: trigger });
+  } catch (error) {
+    console.log("Get getSingleTrigger controller error : ", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
 export {
   createWorkflowTrigger,
   deleteWorkflowTrigger,
   editWorkflowTrigger,
   getAllTriggers,
+  getSingleTrigger,
 };
