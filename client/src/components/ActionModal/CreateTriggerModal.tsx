@@ -156,7 +156,7 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
                       <div
                         onClick={() =>
                           handleCopy(
-                            "Bajudhttps://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc"
+                            "https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc"
                           )
                         }
                         className="flex items-center gap-2 border border-gray-300 rounded-tl-md rounded-bl-md pl-2 hover:bg-gray-100"

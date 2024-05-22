@@ -108,16 +108,16 @@ const allWebhook = async (req, res) => {
               fromNumber:
                 (action?.toNumber === "{{fromNumber}}"
                   ? toNumber
-                  : action?.toNumber?.includes("{{webhook.")
-                  ? replacePlaceholders(action?.toNumber, {
+                  : action?.fromNumber?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.fromNumber, {
                       webhook: webhookResp,
                     })
                   : action?.fromNumber) || toNumber,
               toNumber:
-                (action?.fromNumber === "{{toNumber}}"
+                (action?.toNumber === "{{toNumber}}"
                   ? fromNumber
-                  : action?.fromNumber?.includes("{{webhook.")
-                  ? replacePlaceholders(action?.fromNumber, {
+                  : action?.toNumber?.includes("{{webhook.")
+                  ? replacePlaceholders(action?.toNumber, {
                       webhook: webhookResp,
                     })
                   : action?.toNumber) || fromNumber,
