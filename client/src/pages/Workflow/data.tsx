@@ -9,6 +9,7 @@ import {
   addTriggers,
   setActionItemTags,
   setCurrentWorkflow,
+  setFilterLabels,
 } from "../../store/slices/workflowSlice";
 import { itemTags, parseDataInJSON } from "../../utils";
 
@@ -92,10 +93,26 @@ const useData = () => {
     try {
       const { data } = await axios.get(`/api/workflow/${workflowId}`);
       if (data && data?.success) {
+        let webhookRespData = data?.data?.webhookResponse || [];
+        let webhookLabelValue = webhookRespData.map((item: any) => ({
+          label: `webhook.${item?.key}`,
+          value: `webhook.${item?.key}`,
+        }));
+        if (webhookLabelValue?.length > 0) {
+          dispatch(
+            setFilterLabels({ label: "Webhook", options: webhookLabelValue })
+          );
+        }
         let parsedRespData = parseDataInJSON(data?.data?.apiResponse);
+        let webhookResp = parseDataInJSON(data?.data?.webhookResponse);
         setWorkflow(data?.data);
         dispatch(setCurrentWorkflow(data?.data));
-        dispatch(setActionItemTags([...itemTags, ...parsedRespData]));
+        dispatch(
+          setActionItemTags([
+            ...itemTags,
+            { Webhook: [...parsedRespData, ...webhookResp] },
+          ])
+        );
         setWorkflowName(data?.data?.name);
         setWorkflowStatus(data?.data?.status);
       }

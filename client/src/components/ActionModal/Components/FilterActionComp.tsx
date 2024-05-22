@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { filterLabels, filterTypes, makeExpressions } from "../../../utils";
+import { filterTypes, makeExpressions } from "../../../utils";
 import SearchableSelect from "../../Shared/SearchableSelect";
 import { Minus, Plus } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { addActions } from "../../../store/slices/workflowSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store/reducers";
 
 interface AndValues {
   label: string;
@@ -36,6 +37,9 @@ const FilterActionComp: React.FC<IProps> = ({
   addActionIndex,
 }) => {
   const dispatch = useDispatch();
+  const filterLabels = useSelector(
+    (state: RootState) => state.workflowStore.filterLabels
+  );
 
   const [andValues, setAndValues] = useState<AndValues[]>([
     {
@@ -228,6 +232,27 @@ const FilterActionComp: React.FC<IProps> = ({
     }
   }, [item]);
 
+  const findLabel = (item: any) => {
+    // First, check if it's a direct match
+    let selectedOptionLabel = filterLabels.find(
+      (data: any) => data.value === item.label
+    );
+
+    // If not found, check within the "Webhook" options
+    if (!selectedOptionLabel) {
+      const webhook = filterLabels.find(
+        (data: any) => data.label === "Webhook"
+      );
+      if (webhook && webhook.options) {
+        selectedOptionLabel = webhook.options.find(
+          (option: any) => option.label === item.label
+        );
+      }
+    }
+
+    return selectedOptionLabel;
+  };
+
   return (
     <div className="mt-5 text-sm">
       {/* And Conditions */}
@@ -239,9 +264,7 @@ const FilterActionComp: React.FC<IProps> = ({
             <h2 className="text-sm font-medium">Value</h2>
           </div>
           {andValues.map((item: AndValues, index: number) => {
-            const selectedOptionLabel = filterLabels.find(
-              (data) => data.value === item.label
-            );
+            const selectedOptionLabel = findLabel(item);
             const selectedOptionFilterType = filterTypes.find(
               (data) => data.value === item.filterType
             );
@@ -317,9 +340,7 @@ const FilterActionComp: React.FC<IProps> = ({
             <h2 className="text-sm font-medium">Value</h2>
           </div>
           {orValues.map((item: OrValues, index: number) => {
-            const selectedOptionLabel = filterLabels.find(
-              (data) => data.value === item.label
-            );
+            const selectedOptionLabel = findLabel(item);
             const selectedOptionFilterType = filterTypes.find(
               (data) => data.value === item.filterType
             );

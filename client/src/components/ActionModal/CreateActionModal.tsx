@@ -112,6 +112,9 @@ const CreateActionModal: React.FC<IProps> = ({
 
   const [isOpenModal, setIsOpenModal] = React.useState(false);
   const [showTagsOfIndex, setShowTagsOfIndex] = useState<number>(-1);
+  const [showTagsOfGroup, setShowTagsOfGroup] = useState<any[]>([]);
+  const [isWebhookTag, setIsWebhookTag] = useState<boolean>(false);
+
   const [loading, setLoading] = useState<IState["loading"]>(false);
   const [values, setValues] = useState<IState["values"]>({
     workflowId: workflowId,
@@ -531,48 +534,128 @@ const CreateActionModal: React.FC<IProps> = ({
                     />
 
                     {showTagsOfIndex === index && (
-                      <div className="absolute -top-24 right-0 text-sm border border-gray-400  w-48 h-52 overflow-auto z-50 bg-white shadow-sm">
-                        <div className="flex items-center justify-between bg-gray-200 p-2 cursor-pointer rounded-sm">
-                          <span className="text-blue-500">Custom Values</span>
-                          <button onClick={() => setShowTagsOfIndex(-1)}>
-                            <X size={17} color="blue" />
-                          </button>
-                        </div>
-
-                        {actionItemTags.map((item: any, idx) => {
-                          const key = Object.keys(item)[0]; // Extract the key
-                          const value = item[key];
-                          return (
-                            <div
-                              key={idx}
-                              className="flex items-center justify-between hover:bg-gray-100 p-2 cursor-pointer rounded-sm"
+                      <div className="absolute bottom-[44px] right-0 flex  text-sm border border-gray-400  min-w-44 h-52 overflow-auto z-50 bg-white shadow-sm">
+                        <div className="border-r border-r-gray-300">
+                          <div className="flex items-center justify-between bg-gray-200 p-2 cursor-pointer rounded-sm">
+                            <span className="text-blue-500">Custom Values</span>
+                            <button
                               onClick={() => {
-                                let tagVal = value;
-                                if (
-                                  key !== "seconds" &&
-                                  key !== "minutes" &&
-                                  key !== "hours" &&
-                                  key !== "days"
-                                ) {
-                                  if (
-                                    !value?.includes("{{") &&
-                                    !value?.includes("{{")
-                                  ) {
-                                    tagVal = `{{${key}}}`;
-                                  }
-                                }
-                                handleChangeValue(index, tagVal);
-                                handleUpdateKeyOfTag(index, value);
                                 setShowTagsOfIndex(-1);
+                                setShowTagsOfGroup([]);
+                                setIsWebhookTag(false);
                               }}
                             >
-                              <span>{key}</span>
-                              <button>
-                                <ChevronRight size={17} color="black" />
-                              </button>
-                            </div>
-                          );
-                        })}
+                              <X size={17} color="blue" />
+                            </button>
+                          </div>
+
+                          {actionItemTags.map((item: any, idx) => {
+                            const key = Object.keys(item)[0]; // Extract the key
+                            const value = item[key];
+                            return (
+                              <div
+                                key={idx}
+                                className={`flex items-center justify-between ${
+                                  showTagsOfGroup === value
+                                    ? "bg-gray-200 text-blue-500"
+                                    : "hover:bg-gray-100"
+                                } p-2 cursor-pointer rounded-sm`}
+                                onClick={() => {
+                                  if (key === "Webhook") {
+                                    setIsWebhookTag(true);
+                                  }
+                                  setShowTagsOfGroup(value);
+                                }}
+                                // onClick={() => {
+                                //   let tagVal = value;
+                                //   if (
+                                //     key !== "seconds" &&
+                                //     key !== "minutes" &&
+                                //     key !== "hours" &&
+                                //     key !== "days"
+                                //   ) {
+                                //     if (
+                                //       !value?.includes("{{") &&
+                                //       !value?.includes("{{")
+                                //     ) {
+                                //       tagVal = `{{${key}}}`;
+                                //     }
+                                //   }
+                                //   handleChangeValue(index, tagVal);
+                                //   handleUpdateKeyOfTag(index, value);
+                                //   setShowTagsOfIndex(-1);
+                                // }}
+                              >
+                                <span>{key}</span>
+                                <button className="ml-2">
+                                  <ChevronRight
+                                    size={17}
+                                    color={
+                                      showTagsOfGroup === value
+                                        ? "blue"
+                                        : "black"
+                                    }
+                                  />
+                                </button>
+                              </div>
+                            );
+                          })}
+                        </div>
+
+                        {/* Tags of group -*/}
+                        {showTagsOfGroup.length > 0 && (
+                          <div>
+                            {showTagsOfGroup.map((item, index) => {
+                              const key = Object.keys(item)[0]; // Extract the key
+                              const value = item[key];
+                              return (
+                                <div
+                                  key={index}
+                                  className={`flex items-center justify-between ${
+                                    formData[showTagsOfIndex]?.value === value
+                                      ? "bg-gray-200 text-blue-500"
+                                      : "hover:bg-gray-100"
+                                  } hover:bg-gray-100 p-2 pr-4 cursor-pointer rounded-sm`}
+                                  onClick={() => {
+                                    let tagVal = value;
+                                    if (
+                                      key !== "seconds" &&
+                                      key !== "minutes" &&
+                                      key !== "hours" &&
+                                      key !== "days"
+                                    ) {
+                                      if (
+                                        !value?.includes("{{") &&
+                                        !value?.includes("{{")
+                                      ) {
+                                        if (isWebhookTag) {
+                                          tagVal = `{{webhook.${key}}}`;
+                                        } else {
+                                          tagVal = `{{${key}}}`;
+                                        }
+                                      }
+                                    }
+                                    if (showTagsOfIndex > -1) {
+                                      handleChangeValue(
+                                        showTagsOfIndex,
+                                        tagVal
+                                      );
+                                      handleUpdateKeyOfTag(
+                                        showTagsOfIndex,
+                                        value
+                                      );
+                                      setShowTagsOfIndex(-1);
+                                      setShowTagsOfGroup([]);
+                                      setIsWebhookTag(false);
+                                    }
+                                  }}
+                                >
+                                  <span>{key}</span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>

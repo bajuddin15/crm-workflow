@@ -46,6 +46,12 @@ const workflowSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    webhookResponse: [
+      {
+        key: String,
+        value: String,
+      },
+    ],
   },
   { timestamps: true }
 );

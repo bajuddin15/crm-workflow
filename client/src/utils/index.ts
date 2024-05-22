@@ -19,60 +19,146 @@ export const parseDataInJSON = (data: any) => {
   return respData;
 };
 
+// export const itemTags = [
+//   {
+//     "Contact Name": "{{contact.name}}",
+//   },
+//   {
+//     "Contact Email": "{{contact.email}}",
+//   },
+//   {
+//     "Contact Phone": "{{contact.phoneNumber}}",
+//   },
+//   {
+//     "Group Name": "{{contact.groupName}}",
+//   },
+//   {
+//     "To Number": "{{toNumber}}",
+//   },
+//   {
+//     "From Number": "{{fromNumber}}",
+//   },
+//   {
+//     Message: "{{message}}",
+//   },
+//   {
+//     "Media Url": "{{mediaUrl}}",
+//   },
+//   {
+//     "Template Name": "{{templateName}}",
+//   },
+//   {
+//     "Template Language": "{{templateLang}}",
+//   },
+//   {
+//     "Delay Time": "{{delayTime}}",
+//   },
+//   {
+//     "Delay Formate": "{{delayFormate}}",
+//   },
+//   {
+//     seconds: "seconds",
+//   },
+//   {
+//     minutes: "minutes",
+//   },
+//   {
+//     hours: "hours",
+//   },
+//   {
+//     days: "days",
+//   },
+//   {
+//     voiceText: "{{voiceText}}",
+//   },
+//   {
+//     phoneNumber: "{{phoneNumber}}",
+//   },
+// ];
+
 export const itemTags = [
   {
-    "Contact Name": "{{contact.name}}",
+    "Saved Contact": [
+      {
+        "Contact Name": "{{contact.name}}",
+      },
+      {
+        "Contact Email": "{{contact.email}}",
+      },
+      {
+        "Contact Phone": "{{contact.phoneNumber}}",
+      },
+      {
+        "Group Name": "{{contact.groupName}}",
+      },
+    ],
   },
   {
-    "Contact Email": "{{contact.email}}",
+    "Incoming Voice Call": [
+      {
+        "To Number": "{{toNumber}}",
+      },
+      {
+        "From Number": "{{fromNumber}}",
+      },
+      {
+        voiceText: "{{voiceText}}",
+      },
+    ],
   },
   {
-    "Contact Phone": "{{contact.phoneNumber}}",
+    "Incoming SMS": [
+      {
+        "To Number": "{{toNumber}}",
+      },
+      {
+        "From Number": "{{fromNumber}}",
+      },
+      {
+        Message: "{{message}}",
+      },
+      {
+        "Media Url": "{{mediaUrl}}",
+      },
+    ],
   },
   {
-    "Group Name": "{{contact.groupName}}",
+    "Incoming WhatsApp": [
+      {
+        "To Number": "{{toNumber}}",
+      },
+      {
+        "From Number": "{{fromNumber}}",
+      },
+      {
+        Message: "{{message}}",
+      },
+      {
+        "Media Url": "{{mediaUrl}}",
+      },
+      // {
+      //   "Template Name": "{{templateName}}",
+      // },
+      // {
+      //   "Template Language": "{{templateLang}}",
+      // },
+    ],
   },
   {
-    "To Number": "{{toNumber}}",
-  },
-  {
-    "From Number": "{{fromNumber}}",
-  },
-  {
-    Message: "{{message}}",
-  },
-  {
-    "Media Url": "{{mediaUrl}}",
-  },
-  {
-    "Template Name": "{{templateName}}",
-  },
-  {
-    "Template Language": "{{templateLang}}",
-  },
-  {
-    "Delay Time": "{{delayTime}}",
-  },
-  {
-    "Delay Formate": "{{delayFormate}}",
-  },
-  {
-    seconds: "seconds",
-  },
-  {
-    minutes: "minutes",
-  },
-  {
-    hours: "hours",
-  },
-  {
-    days: "days",
-  },
-  {
-    voiceText: "{{voiceText}}",
-  },
-  {
-    phoneNumber: "{{phoneNumber}}",
+    Delay: [
+      {
+        seconds: "seconds",
+      },
+      {
+        minutes: "minutes",
+      },
+      {
+        hours: "hours",
+      },
+      {
+        days: "days",
+      },
+    ],
   },
 ];
 
@@ -101,7 +187,7 @@ export const getOrganiseKeyName = (keyValue: string) => {
     case "delayTime":
       return "Delay Time";
     case "delayFormate":
-      return "Delay Formate";
+      return "Delay Format";
     case "voiceText":
       return "Voice Text";
     default:
@@ -144,11 +230,26 @@ export const filterLabels = [
     value: "mediaUrl",
     label: "Media Url",
   },
-  {
-    value: "templateName",
-    label: "Template Name",
-  },
 ];
+
+// export const filterLabels = [
+//   {
+//     label: "Fruits",
+//     options: [
+//       { value: "apple", label: "Apple" },
+//       { value: "orange", label: "Orange" },
+//       { value: "banana", label: "Banana" },
+//     ],
+//   },
+//   {
+//     label: "Vegetables",
+//     options: [
+//       { value: "carrot", label: "Carrot" },
+//       { value: "broccoli", label: "Broccoli" },
+//       { value: "spinach", label: "Spinach" },
+//     ],
+//   },
+// ];
 
 const filterTypeToSignMap: Record<string, string> = {
   equal: "===",
@@ -178,7 +279,6 @@ export const makeExpressions = (
   conditions: FilterParams[],
   signOfMap: SignOfMap
 ) => {
-  console.log(conditions);
   const expression = conditions
     .map((condition) => {
       const filterType = condition.filterType;

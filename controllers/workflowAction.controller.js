@@ -82,7 +82,6 @@ const createWorkflowAction = async (req, res) => {
 const deleteWorkflowAction = async (req, res) => {
   const { id: actionId } = req.params;
   const { workflowId } = req.body;
-  console.log({ "req.body": req.body, workflowId });
 
   try {
     const findAction = await WorkflowAction.findById(actionId);
