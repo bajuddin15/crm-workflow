@@ -53,3 +53,45 @@ export function replacePlaceholders(template, data) {
     return value !== undefined ? value : match;
   });
 }
+
+export function parseSingleData(data) {
+  if (typeof data !== "object" || data === null) {
+    return []; // Return an empty array if data is not an object
+  }
+
+  const parsedData = [];
+
+  for (const key in data) {
+    const value = data[key];
+    if (typeof value === "string" || typeof value === "number") {
+      parsedData.push({ key, value });
+    }
+  }
+
+  return parsedData;
+}
+
+/*
+
+const data = {
+  name:bajuddin
+  age:23
+}
+value = {{name}}
+
+*/
+
+// mapped values for execute api resp
+export const getMappedValue = (value, data, webhook) => {
+  let result = "";
+  if (value.includes("{{webhook.")) {
+    result = replacePlaceholders(value, { webhook });
+  } else if (value.includes("{{") && value.includes("}}")) {
+    result = value.replace(/{{(\w+)}}/g, (match, p1) =>
+      data[p1] !== undefined ? data[p1] : "match"
+    );
+  } else {
+    result = value;
+  }
+  return result;
+};

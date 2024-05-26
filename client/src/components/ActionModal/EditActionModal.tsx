@@ -105,6 +105,10 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     (state: RootState) => state.workflowStore.actionItemTags
   );
 
+  const currentWorkflow = useSelector(
+    (state: RootState) => state.workflowStore.currentWorkflow
+  );
+
   const [isOpenModal, setIsOpenModal] = React.useState(false);
   const [showTagsOfIndex, setShowTagsOfIndex] = useState<number>(-1);
   const [showTagsOfGroup, setShowTagsOfGroup] = useState<any[]>([]);
@@ -127,6 +131,9 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
   const [apiActionParameters, setApiActionParameters] = useState<FormData[]>([
     { key: "", value: "" },
   ]);
+
+  // isDynamicMappingExist
+  const [isDynamicTagExist, setIsDynamicTagExist] = useState<boolean>(false);
 
   const [parsedApiResp, setParsedApiResp] = useState<FormData[]>([]);
 
@@ -411,6 +418,30 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
     setFormData(formDataArray);
   }, [item, setFormData]);
 
+  // isDynamicTagExist check
+  useEffect(() => {
+    let flag = false;
+    for (let i = 0; i < apiActionHeaders.length; i++) {
+      let item = apiActionHeaders[i];
+      if (item.value.includes("{{") && item.value.includes("}}")) {
+        flag = true;
+        break;
+      }
+    }
+    for (let i = 0; i < apiActionParameters.length; i++) {
+      let item = apiActionParameters[i];
+      if (item.value.includes("{{") && item.value.includes("}}")) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) {
+      setIsDynamicTagExist(true);
+    } else {
+      setIsDynamicTagExist(false);
+    }
+  }, [apiActionParameters, apiActionHeaders]);
+
   return (
     <>
       <div
@@ -530,9 +561,16 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
               )}
 
               {/* Api Response */}
-              {parsedApiResp?.length > 0 && (
+              {(parsedApiResp?.length > 0 ||
+                currentWorkflow?.apiResponse?.length > 0) && (
                 <div>
-                  <KeyValueComp data={parsedApiResp} />
+                  <KeyValueComp
+                    data={
+                      parsedApiResp.length > 0
+                        ? parsedApiResp
+                        : currentWorkflow?.apiResponse
+                    }
+                  />
                 </div>
               )}
             </div>
@@ -721,16 +759,20 @@ const EditActionModal: React.FC<IProps> = ({ item, workflowId }) => {
               </button>
               <div className="flex items-center gap-2">
                 {item?.unqName === "restApi" && (
-                  <button
-                    className="bg-blue-500 text-white border border-gray-400 hover:bg-blue-600 px-4 py-2 rounded-md"
-                    onClick={() => handleRestApiActionUpdate(true)}
-                  >
-                    {testApiLoading ? (
-                      <Loading bgColor="#fff" size="21" />
-                    ) : (
-                      <span>Test Request</span>
+                  <>
+                    {!isDynamicTagExist && (
+                      <button
+                        className="bg-blue-500 text-white border border-gray-400 hover:bg-blue-600 px-4 py-2 rounded-md"
+                        onClick={() => handleRestApiActionUpdate(true)}
+                      >
+                        {testApiLoading ? (
+                          <Loading bgColor="#fff" size="21" />
+                        ) : (
+                          <span>Test Request</span>
+                        )}
+                      </button>
                     )}
-                  </button>
+                  </>
                 )}
                 <button
                   className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 rounded-md"

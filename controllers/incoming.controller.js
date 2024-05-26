@@ -2,8 +2,16 @@ import axios from "axios";
 import FormData from "form-data";
 import Workflow from "../models/workflow.model.js";
 import WorkflowHistory from "../models/workflowHistory.model.js";
-import { calculateTimeInMillis, replacePlaceholders } from "../utils/common.js";
-import { getProviderDetails, getTokenFromNumber } from "../utils/api.js";
+import {
+  calculateTimeInMillis,
+  parseSingleData,
+  replacePlaceholders,
+} from "../utils/common.js";
+import {
+  executeApiAndGetResp,
+  getProviderDetails,
+  getTokenFromNumber,
+} from "../utils/api.js";
 
 const incomingMessage = async (req, res) => {
   const {
@@ -439,11 +447,41 @@ const incomingMessage = async (req, res) => {
                 break;
               }
             } else if (action.unqName === "restApi") {
-              await WorkflowHistory.findByIdAndUpdate(
-                workflowHistoryId,
-                { status: "finshed" },
-                { new: true }
-              );
+              const actionEventMethod = action.actionEventMethod;
+              const endpointUrl = action.endpointUrl;
+              const payloadType = action.payloadType;
+              const headers = action.headers;
+              const parameters = action.parameters;
+
+              const formData = {
+                actionEventMethod,
+                endpointUrl,
+                payloadType,
+                headers,
+                parameters,
+                webhook: webhookResp,
+                inputData: { ...actionFormData, ...req.body },
+              };
+
+              const apiResp = await executeApiAndGetResp(formData);
+
+              if (apiResp) {
+                const parsedRespInKeyValue = parseSingleData(apiResp);
+                myworkflow.apiResponse = parsedRespInKeyValue;
+                await myworkflow.save();
+
+                await WorkflowHistory.findByIdAndUpdate(
+                  workflowHistoryId,
+                  { status: "finshed" },
+                  { new: true }
+                );
+              } else {
+                await WorkflowHistory.findByIdAndUpdate(
+                  workflowHistoryId,
+                  { status: "failed" },
+                  { new: true }
+                );
+              }
             }
           }
         }

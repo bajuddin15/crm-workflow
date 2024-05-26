@@ -5,10 +5,16 @@ import Drawer from "react-modern-drawer";
 import Loading from "../Loading";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { addTriggers } from "../../store/slices/workflowSlice";
-import { useDispatch } from "react-redux";
+import {
+  addTriggers,
+  setActionItemTags,
+  setFilterLabels,
+} from "../../store/slices/workflowSlice";
+import { useDispatch, useSelector } from "react-redux";
 import useData from "./data";
 import KeyValueComp from "../KeyValueComp";
+import { itemTags, parseDataInJSON } from "../../utils";
+import { RootState } from "../../store/reducers";
 
 interface IProps {
   item: any;
@@ -30,6 +36,10 @@ const EditTriggerModal: React.FC<IProps> = ({
   const dispatch = useDispatch();
   const { handleCopy } = useData();
   const [isOpenModal, setIsOpenModal] = React.useState(false);
+
+  const currentWorkflow = useSelector(
+    (state: RootState) => state.workflowStore.currentWorkflow
+  );
 
   const [loading, setLoading] = useState<IState["loading"]>(false);
   const [trigger, setTrigger] = useState<IState["trigger"]>(null);
@@ -111,6 +121,26 @@ const EditTriggerModal: React.FC<IProps> = ({
         `/api/workflowTrigger/${currentTrigger?._id}`
       );
       if (data && data?.success) {
+        let webhookRespData = data?.data?.webhookResponse || [];
+        let webhookLabelValue = webhookRespData.map((item: any) => ({
+          label: `webhook.${item?.key}`,
+          value: `webhook.${item?.key}`,
+        }));
+        if (webhookLabelValue?.length > 0) {
+          dispatch(
+            setFilterLabels({ label: "Webhook", options: webhookLabelValue })
+          );
+        }
+        let webhookResp = parseDataInJSON(webhookRespData);
+        let parsedRespData = parseDataInJSON(
+          currentWorkflow?.apiResponse || []
+        );
+        dispatch(
+          setActionItemTags([
+            ...itemTags,
+            { Webhook: [...parsedRespData, ...webhookResp] },
+          ])
+        );
         setTrigger(data?.data);
       }
     } catch (error: any) {

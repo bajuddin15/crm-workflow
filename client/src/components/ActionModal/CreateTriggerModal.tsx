@@ -149,37 +149,38 @@ const CreateTriggerModal: React.FC<IProps> = ({ item, workflowId }) => {
                       </button>
                     </div>
                   ) : (
-                    <div className="flex flex-col gap-1 text-sm">
-                      <label htmlFor="webhookUrl" className="font-medium">
-                        Webhook URL
-                      </label>
-                      <div
-                        onClick={() =>
-                          handleCopy(
-                            "https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc"
-                          )
-                        }
-                        className="flex items-center gap-2 border border-gray-300 rounded-tl-md rounded-bl-md pl-2 hover:bg-gray-100"
-                      >
-                        <span
-                          style={{ scrollbarWidth: "none" }}
-                          className="text-sm overflow-x-auto"
-                        >
-                          https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc
-                        </span>
-                        <span className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer py-2 px-4 rounded-tr-md rounded-br-md">
-                          Copy
-                        </span>
-                      </div>
-                      <span className="text-xs text-gray-500">
-                        Copy the webhook URL and add it under the webhook
-                        section of the application you're willing to integrate
-                        with. Once you're done with adding the webhook URL, then
-                        do a test submission/record in that application in order
-                        to capture the webhook response here. Note that webhook
-                        URL is unique for every workflow.
-                      </span>
-                    </div>
+                    <></>
+                    // <div className="flex flex-col gap-1 text-sm">
+                    //   <label htmlFor="webhookUrl" className="font-medium">
+                    //     Webhook URL
+                    //   </label>
+                    //   <div
+                    //     onClick={() =>
+                    //       handleCopy(
+                    //         "https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc"
+                    //       )
+                    //     }
+                    //     className="flex items-center gap-2 border border-gray-300 rounded-tl-md rounded-bl-md pl-2 hover:bg-gray-100"
+                    //   >
+                    //     <span
+                    //       style={{ scrollbarWidth: "none" }}
+                    //       className="text-sm overflow-x-auto"
+                    //     >
+                    //       https://connect.pabbly.com/workflow/sendwebhookdata/IjU3NjUwNTZiMDYzNjA0MzU1MjZkNTUzNTUxMzYi_pc
+                    //     </span>
+                    //     <span className="bg-blue-500 hover:bg-blue-600 text-white cursor-pointer py-2 px-4 rounded-tr-md rounded-br-md">
+                    //       Copy
+                    //     </span>
+                    //   </div>
+                    //   <span className="text-xs text-gray-500">
+                    //     Copy the webhook URL and add it under the webhook
+                    //     section of the application you're willing to integrate
+                    //     with. Once you're done with adding the webhook URL, then
+                    //     do a test submission/record in that application in order
+                    //     to capture the webhook response here. Note that webhook
+                    //     URL is unique for every workflow.
+                    //   </span>
+                    // </div>
                   )}
                 </div>
               )}

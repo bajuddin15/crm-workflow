@@ -107,12 +107,14 @@ const useData = () => {
         let webhookResp = parseDataInJSON(data?.data?.webhookResponse);
         setWorkflow(data?.data);
         dispatch(setCurrentWorkflow(data?.data));
-        dispatch(
-          setActionItemTags([
-            ...itemTags,
-            { Webhook: [...parsedRespData, ...webhookResp] },
-          ])
-        );
+        if (parsedRespData?.length > 0 || webhookResp?.length > 0) {
+          dispatch(
+            setActionItemTags([
+              ...itemTags,
+              { Webhook: [...parsedRespData, ...webhookResp] },
+            ])
+          );
+        }
         setWorkflowName(data?.data?.name);
         setWorkflowStatus(data?.data?.status);
       }

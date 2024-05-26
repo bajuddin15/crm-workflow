@@ -130,6 +130,10 @@ const CreateActionModal: React.FC<IProps> = ({
   const [apiActionParameters, setApiActionParameters] = useState<FormData[]>([
     { key: "", value: "" },
   ]);
+
+  // isDynamicMappingExist
+  const [isDynamicTagExist, setIsDynamicTagExist] = useState<boolean>(false);
+
   const [parsedApiResp, setParsedApiResp] = useState<FormData[]>([]);
 
   const [selectedActionMethod, setSelectedActionMethod] = useState<any>({
@@ -371,6 +375,30 @@ const CreateActionModal: React.FC<IProps> = ({
 
     setFormData(formDataArray);
   }, [item]);
+
+  // isDynamicTagExist check
+  useEffect(() => {
+    let flag = false;
+    for (let i = 0; i < apiActionHeaders.length; i++) {
+      let item: any = apiActionHeaders[i];
+      if (item.value.includes("{{") && item.value.includes("}}")) {
+        flag = true;
+        break;
+      }
+    }
+    for (let i = 0; i < apiActionParameters.length; i++) {
+      let item: any = apiActionParameters[i];
+      if (item.value.includes("{{") && item.value.includes("}}")) {
+        flag = true;
+        break;
+      }
+    }
+    if (flag) {
+      setIsDynamicTagExist(true);
+    } else {
+      setIsDynamicTagExist(false);
+    }
+  }, [apiActionParameters, apiActionHeaders]);
 
   return (
     <>
@@ -685,16 +713,20 @@ const CreateActionModal: React.FC<IProps> = ({
               </button>
               <div className="flex items-center gap-2">
                 {item?.unqName === "restApi" && (
-                  <button
-                    className="bg-blue-500 text-white border border-gray-400 hover:bg-blue-600 px-4 py-2 rounded-md"
-                    onClick={() => handleRestApiActionCreate(true)}
-                  >
-                    {testApiLoading ? (
-                      <Loading bgColor="#fff" size="21" />
-                    ) : (
-                      <span>Test Request</span>
+                  <>
+                    {!isDynamicTagExist && (
+                      <button
+                        className="bg-blue-500 text-white border border-gray-400 hover:bg-blue-600 px-4 py-2 rounded-md"
+                        onClick={() => handleRestApiActionCreate(true)}
+                      >
+                        {testApiLoading ? (
+                          <Loading bgColor="#fff" size="21" />
+                        ) : (
+                          <span>Test Request</span>
+                        )}
+                      </button>
                     )}
-                  </button>
+                  </>
                 )}
                 <button
                   className="bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 rounded-md"
